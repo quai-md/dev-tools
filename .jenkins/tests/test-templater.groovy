@@ -2,18 +2,16 @@
 
 import com.nu.art.utils.StringTemplateReplacer
 
-pipeline {
+node() {
 	agent any
 
-	script {
-		stages {
-			stage('test templater') {
+	stages {
+		stage('test templater') {
 //			env.PARAM = "lovely"
 ////				env.PLACEHOLDER = "zevel"
 //			env.TEST1 = "friendly"
-				StringTemplateReplacer.replace("./.jenkins/tests/test-template.txt", "./.jenkins/tests/output.txt")
-				sh 'cat "./.jenkins/tests/output.txt"'
-			}
+			StringTemplateReplacer.replace("./.jenkins/tests/test-template.txt", "./.jenkins/tests/output.txt")
+			sh 'cat "./.jenkins/tests/output.txt"'
 		}
 	}
 }
