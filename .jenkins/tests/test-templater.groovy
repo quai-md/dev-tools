@@ -21,7 +21,7 @@ class TemplaterPipeline
 
 		GitModule gitModule = getModule(GitModule.class)
 		GitRepo repo = gitModule
-			.create("git@github.com:nu-art/dev-tools.git")
+			.create("https://github.com/nu-art/dev-tools.git")
 			.setBranch("prod")
 			.setOutputFolder(".")
 			.build()
