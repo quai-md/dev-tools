@@ -21,6 +21,6 @@ class TemplaterPipeline
 }
 
 node() {
-	Workflow.createWorkflow(Pipeline.class, this)
+	Workflow.createWorkflow(TemplaterPipeline.class, this)
 }
 
