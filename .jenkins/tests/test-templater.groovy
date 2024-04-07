@@ -15,7 +15,7 @@ class TemplaterPipeline
 	}
 
 	void pipeline() {
-		StringTemplateReplacer.replace("./.jenkins/tests/test-template.txt", "./.jenkins/tests/output.txt")
+		StringTemplateReplacer.replace(".jenkins/tests/test-template.txt", ".jenkins/tests/output.txt")
 		_sh 'cat "./.jenkins/tests/output.txt"'
 	}
 }
