@@ -30,7 +30,7 @@ class TemplaterPipeline
 
 		_sh '''
 					pwd
-					ls -la
+					ls -la ./.jenkins/tests
 				'''
 		StringTemplateReplacer.replace("./.jenkins/tests/test-template.txt", "./.jenkins/tests/output.txt")
 		_sh 'cat "./.jenkins/tests/output.txt"'
