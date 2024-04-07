@@ -199,7 +199,6 @@ class Workflow
 
 		if (t)
 			throw t
-
 	}
 
 	private <T> void dispatchEvent(String message, Class<T> listenerType, WorkflowProcessor<T> processor) {
