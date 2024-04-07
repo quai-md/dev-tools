@@ -6,7 +6,7 @@ class StringTemplateReplacer {
 
 	static void replace(String fromFile, String toFile) {
 		// Read content from the source file
-		String content = new File(fromFile).text
+		String content = Workflow.workflow.script.readFile fromFile
 
 		// Regex to find {{VAR_NAME}} patterns
 		String pattern = /\{\{([a-zA-Z_][a-zA-Z_0-9]+)(?:=(.*?))?\}\}/
