@@ -12,7 +12,10 @@ class StringTemplateReplacer {
 		String pattern = /\{\{([a-zA-Z_][a-zA-Z_0-9]+)(?:=(.*?))?\}\}/
 
 		// Replace each found pattern with the value from Jenkins environment variable
-		String modifiedContent = content.replaceAll(pattern) { fullMatch, varName, defaultValue ->
+		String modifiedContent = content.replaceAll(pattern) { match ->
+			String varName = match[1]
+			String defaultValue = match[2]
+
 			// Attempt to fetch the environment variable value
 			String varValue = Workflow.workflow.getEnvironmentVariable(varName)
 
