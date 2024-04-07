@@ -12,7 +12,7 @@ class StringTemplateReplacer {
 		String pattern = /\{\{([a-zA-Z_][a-zA-Z_0-9]+)(?:=(.*?))?\}\}/
 
 		// Replace each found pattern with the value from Jenkins environment variable
-		String modifiedContent = content.replaceAll(pattern) { match ->
+		String fileContent = content.replaceAll(pattern) { match ->
 			String varName = match[1]
 			String defaultValue = match[2]
 
@@ -35,6 +35,6 @@ class StringTemplateReplacer {
 
 
 		// Write the modified content to the destination file
-		new File(toFile).text = modifiedContent
+		Workflow.workflow.script.writeFile file: toFile, text: fileContent
 	}
 }
