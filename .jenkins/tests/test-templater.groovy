@@ -3,8 +3,6 @@
 import com.nu.art.utils.StringTemplateReplacer
 
 node() {
-	agent any
-
 	stages {
 		stage('test templater') {
 //			env.PARAM = "lovely"
