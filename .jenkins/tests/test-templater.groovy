@@ -3,13 +3,7 @@
 import com.nu.art.utils.StringTemplateReplacer
 
 pipeline {
-//	agent {
-//		kubernetes {
-//			defaultContainer 'base'
-//			yamlFile './pod-templates/base.yaml'
-//		}
-//	}
-//
+	agent any
 
 	stages {
 		stage('test templater') {
