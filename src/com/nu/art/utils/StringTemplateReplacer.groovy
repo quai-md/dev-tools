@@ -1,8 +1,8 @@
-import java.lang.Exception
+package com.nu.art.utils
 
 class StringTemplateReplacer {
 
-	void replace(String fromFile, String toFile) {
+	static void replace(String fromFile, String toFile) {
 		// Read content from the source file
 		String content = new File(fromFile).text
 
