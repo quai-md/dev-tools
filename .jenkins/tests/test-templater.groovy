@@ -34,6 +34,8 @@ class TemplaterPipeline
 					ls -la ./.jenkins/tests
 				'''
 
+		this.workflow.setEnvironmentVariable("TEST1", "lovely")
+		this.workflow.setEnvironmentVariable("PARAM", "friendly")
 		String fromFile = getModule(BuildModule.class).pathToFile("./.jenkins/tests/test-template.txt")
 		String toFile = getModule(BuildModule.class).pathToFile("./.jenkins/tests/output.txt")
 		StringTemplateReplacer.replace(fromFile, toFile)

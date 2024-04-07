@@ -58,11 +58,11 @@ class Workflow
 
 		script.ansiColor('xterm') {
 //			script.sshagent(credentials: Arrays.asList(pipeline.sshCreds)) {
-				script.withCredentials(pipeline.creds.collect { param -> param.toCredential(script) }) {
-					workflow.script.wrap([$class: 'BuildUser']) {
-						pipeline.pipeline()
-						pipeline.run()
-					}
+			script.withCredentials(pipeline.creds.collect { param -> param.toCredential(script) }) {
+				workflow.script.wrap([$class: 'BuildUser']) {
+					pipeline.pipeline()
+					pipeline.run()
+				}
 //				}
 			}
 		}
@@ -232,6 +232,11 @@ class Workflow
 	@NonCPS
 	String getEnvironmentVariable(String varName) {
 		return script.env[varName]
+	}
+
+	@NonCPS
+	String setEnvironmentVariable(String varName, String value) {
+		return script.env[varName] = value
 	}
 
 	void withCredentials(Var_Creds[] params, Closure toRun) {
