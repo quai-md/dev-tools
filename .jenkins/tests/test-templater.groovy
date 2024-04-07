@@ -10,7 +10,7 @@ class TemplaterPipeline
 	extends BasePipeline<TemplaterPipeline> {
 
 	TemplaterPipeline() {
-		super("Test Templater")
+		super("Test Templater", GitModule.class)
 	}
 
 	@Override
@@ -18,10 +18,6 @@ class TemplaterPipeline
 	}
 
 	void pipeline() {
-		_sh '''
-					pwd
-					ls -la
-				'''
 
 		GitModule gitModule = getModule(GitModule.class)
 		GitRepo repo = gitModule
@@ -32,6 +28,10 @@ class TemplaterPipeline
 
 		repo.cloneRepo()
 
+		_sh '''
+					pwd
+					ls -la
+				'''
 		StringTemplateReplacer.replace(".jenkins/tests/test-template.txt", ".jenkins/tests/output.txt")
 		_sh 'cat "./.jenkins/tests/output.txt"'
 	}
