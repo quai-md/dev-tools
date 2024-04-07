@@ -1,5 +1,7 @@
 package com.nu.art.utils
 
+import com.nu.art.pipeline.workflow.Workflow
+
 class StringTemplateReplacer {
 
 	static void replace(String fromFile, String toFile) {
@@ -12,7 +14,7 @@ class StringTemplateReplacer {
 		// Replace each found pattern with the value from Jenkins environment variable
 		String modifiedContent = content.replaceAll(pattern) { fullMatch, varName, defaultValue ->
 			// Attempt to fetch the environment variable value
-			String varValue = env[varName]
+			String varValue = Workflow.workflow.getEnvironmentVariable(varName)
 
 			// Use the default value if the environment variable is not found or is empty
 			if (!varValue) {
