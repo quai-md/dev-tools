@@ -1,4 +1,4 @@
-@Library('dev-tools@pipeline')
+@Library('dev-tools')
 
 import com.nu.art.utils.StringTemplateReplacer
 
