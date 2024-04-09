@@ -49,21 +49,20 @@ class Workflow
 		workflow.addModulePacks(pipeline)
 		workflow.build()
 
-		WorkflowModule[] allmodules = workflow.manager.getModulesAssignableFrom(WorkflowModule.class)
-		allmodules.each { it._init() }
-
-		pipeline._postInit()
-		workflow.start()
-
-
 		script.ansiColor('xterm') {
-//			script.sshagent(credentials: Arrays.asList(pipeline.sshCreds)) {
+
+			WorkflowModule[] allmodules = workflow.manager.getModulesAssignableFrom(WorkflowModule.class)
+			allmodules.each { it._init() }
+
+			pipeline._postInit()
+			workflow.start()
+
+
 			script.withCredentials(pipeline.creds.collect { param -> param.toCredential(script) }) {
 				workflow.script.wrap([$class: 'BuildUser']) {
 					pipeline.pipeline()
 					pipeline.run()
 				}
-//				}
 			}
 		}
 
