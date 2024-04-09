@@ -236,6 +236,7 @@ class Workflow
 
 	@NonCPS
 	String setEnvironmentVariable(String varName, String value) {
+		this.logDebug("Setting Env Variable: ${varName}=${value}")
 		return script.env[varName] = value
 	}
 
