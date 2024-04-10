@@ -41,6 +41,7 @@ tsLibs=(
   live-docs
   user-account
   permissions
+  ts-short-url
   ts-focused-object
   ts-messaging
   ts-workspace
