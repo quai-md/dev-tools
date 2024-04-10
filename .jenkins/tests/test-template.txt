@@ -1,0 +1,2 @@
+This is a {{TEST1}} file with a few {{PLACEHOLDER=examples of}}
+{{PARAM}} parameters

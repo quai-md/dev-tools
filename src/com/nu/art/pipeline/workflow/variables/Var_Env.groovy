@@ -30,4 +30,10 @@ class Var_Env
 	String get() {
 		return value.get()
 	}
+
+	String set(String newValue) {
+		String oldValue = this.value.get()
+		Workflow.workflow.setEnvironmentVariable(this.varName, newValue)
+		return oldValue
+	}
 }

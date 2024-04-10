@@ -1,0 +1,2 @@
+This is a lovely file with a few examples of
+friendly parameters

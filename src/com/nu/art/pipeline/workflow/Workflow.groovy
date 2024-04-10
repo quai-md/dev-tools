@@ -49,21 +49,20 @@ class Workflow
 		workflow.addModulePacks(pipeline)
 		workflow.build()
 
-		WorkflowModule[] allmodules = workflow.manager.getModulesAssignableFrom(WorkflowModule.class)
-		allmodules.each { it._init() }
-
-		pipeline._postInit()
-		workflow.start()
-
-
 		script.ansiColor('xterm') {
-//			script.sshagent(credentials: Arrays.asList(pipeline.sshCreds)) {
-				script.withCredentials(pipeline.creds.collect { param -> param.toCredential(script) }) {
-					workflow.script.wrap([$class: 'BuildUser']) {
-						pipeline.pipeline()
-						pipeline.run()
-					}
-//				}
+
+			WorkflowModule[] allmodules = workflow.manager.getModulesAssignableFrom(WorkflowModule.class)
+			allmodules.each { it._init() }
+
+			pipeline._postInit()
+			workflow.start()
+
+
+			script.withCredentials(pipeline.creds.collect { param -> param.toCredential(script) }) {
+				workflow.script.wrap([$class: 'BuildUser']) {
+					pipeline.pipeline()
+					pipeline.run()
+				}
 			}
 		}
 
@@ -199,7 +198,6 @@ class Workflow
 
 		if (t)
 			throw t
-
 	}
 
 	private <T> void dispatchEvent(String message, Class<T> listenerType, WorkflowProcessor<T> processor) {
@@ -233,6 +231,12 @@ class Workflow
 	@NonCPS
 	String getEnvironmentVariable(String varName) {
 		return script.env[varName]
+	}
+
+	@NonCPS
+	String setEnvironmentVariable(String varName, String value) {
+		this.logDebug("Setting Env Variable: ${varName}=${value}")
+		return script.env[varName] = value
 	}
 
 	void withCredentials(Var_Creds[] params, Closure toRun) {
