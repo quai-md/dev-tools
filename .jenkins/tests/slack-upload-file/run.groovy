@@ -22,10 +22,16 @@ class PipelineTest_SlackUploadFile
 
 	@Override
 	void pipeline() {
-		String fromFile = getModule(BuildModule.class).pathToFile("./.jenkins/tests/slack-upload-file/dummy-file.txt")
+		getModule(SlackModule.class).disable()
+		addStage("upload file", {
+			String fromFile = getModule(BuildModule.class).pathToFile(".jenkins/tests/slack-upload-file/dummy-file.txt")
 
-		Workflow.workflow.script.writeFile file: fromFile, text: "Hello, world!"
-		getModule(SlackModule.class).sendFile(fromFile, "pipeline-temp")
+			getModule(SlackModule.class).enableNotifications()
+			Workflow.workflow.script.writeFile file: fromFile, text: "Hello, world!"
+			getModule(SlackModule.class).sendFile(fromFile, "pipeline-temp")
+
+			getModule(SlackModule.class).disable()
+		})
 	}
 }
 
