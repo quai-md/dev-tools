@@ -92,6 +92,7 @@ class SlackModule
 		// Assuming filePath is valid and accessible in the current workspace
 		try {
 			workflow.script.slackUploadFile(
+				botUser: true,
 				filePath: filePath,
 				channel: channelName,
 				credentialId: SlackToken.id // Ensure this is the credential ID for a bot user token
