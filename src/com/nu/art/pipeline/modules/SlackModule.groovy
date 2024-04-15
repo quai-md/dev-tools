@@ -98,7 +98,7 @@ class SlackModule
 			)
 		} catch (e) {
 			// Handle errors appropriately
-			println "Error uploading file to Slack: ${e.message}"
+			this.logError(e)
 		}
 	}
 
