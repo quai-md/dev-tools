@@ -42,6 +42,7 @@ tsLibs=(
   user-account
   permissions
   ts-short-url
+  ts-dependency-viewer
   ts-focused-object
   ts-messaging
   ts-workspace
