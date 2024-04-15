@@ -27,6 +27,7 @@ class PipelineTest_SlackUploadFile
 
 			getModule(SlackModule.class).enableNotifications()
 			getModule(SlackModule.class).sendFile("**/dummy-file.txt", "pipeline-temp")
+			getModule(SlackModule.class).sendFile("**/dummy-file.txt", "pipeline-temp", "with message")
 			getModule(SlackModule.class).disable()
 		})
 	}
