@@ -7,10 +7,10 @@ import com.nu.art.pipeline.modules.git.GitModule
 import com.nu.art.pipeline.modules.build.BuildModule
 import com.nu.art.pipeline.modules.git.GitRepo
 
-class TemplaterPipeline
-	extends BasePipeline<TemplaterPipeline> {
+class PipelineTest_Templater
+	extends BasePipeline<PipelineTest_Templater> {
 
-	TemplaterPipeline() {
+	PipelineTest_Templater() {
 		super("Test Templater", BuildModule.class, GitModule.class)
 	}
 
@@ -32,14 +32,14 @@ class TemplaterPipeline
 		this.workflow.setEnvironmentVariable("TEST1", "lovely")
 		this.workflow.setEnvironmentVariable("PARAM", "friendly")
 
-		String fromFile = getModule(BuildModule.class).pathToFile("./.jenkins/tests/test-template.txt")
-		String toFile = getModule(BuildModule.class).pathToFile("./.jenkins/tests/output.txt")
+		String fromFile = getModule(BuildModule.class).pathToFile("./.jenkins/tests/templater/test-template.txt")
+		String toFile = getModule(BuildModule.class).pathToFile("./.jenkins/tests/templater/output.txt")
 		StringTemplateReplacer.replace(fromFile, toFile)
-		_sh 'cat "./.jenkins/tests/output.txt"'
+		_sh 'cat "./.jenkins/tests/templater/output.txt"'
 	}
 }
 
 node() {
-	Workflow.createWorkflow(TemplaterPipeline.class, this)
+	Workflow.createWorkflow(PipelineTest_Templater.class, this)
 }
 

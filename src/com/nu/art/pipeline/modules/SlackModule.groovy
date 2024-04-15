@@ -85,16 +85,18 @@ class SlackModule
 		workflow.script.slackSend(botUser: true, color: color, teamDomain: teamDomain, channel: channelName, message: finalMessage, tokenCredentialId: SlackToken.id)
 	}
 
-	void sendFile(String filePath, String channelName = defaultChannel) {
+	void sendFile(String filePath, String channelName = defaultChannel, String initialComment = null) {
 		if (!enabled)
 			return
 
+		this.logInfo("filePath: ${filePath}, channelName: ${channelName}, credentialId: ${SlackToken.id}")
 		// Assuming filePath is valid and accessible in the current workspace
 		try {
 			workflow.script.slackUploadFile(
+				initialComment: initialComment,
 				filePath: filePath,
 				channel: channelName,
-				credentialId: SlackToken.id // Ensure this is the credential ID for a bot user token
+				credentialId: SlackToken.id, // Ensure this is the credential ID for a bot user token
 			)
 		} catch (e) {
 			// Handle errors appropriately
