@@ -26,7 +26,7 @@ class PipelineTest_SlackUploadFile
 		addStage("upload file", {
 
 			getModule(SlackModule.class).enableNotifications()
-			getModule(SlackModule.class).sendFile(".jenkins/tests/slack-upload-file/dummy-file.txt", "pipeline-temp")
+			getModule(SlackModule.class).sendFile(".jenkins/tests/**/dummy-file.txt", "pipeline-temp")
 
 			getModule(SlackModule.class).disable()
 		})
