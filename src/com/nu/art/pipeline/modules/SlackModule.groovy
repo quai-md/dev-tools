@@ -7,6 +7,7 @@ import com.nu.art.pipeline.workflow.WorkflowModule
 import com.nu.art.pipeline.workflow.variables.VarConsts
 import com.nu.art.pipeline.workflow.variables.Var_Creds
 import com.nu.art.utils.Colors
+import com.nu.art.pipeline.workflow.variables.Var_Env
 
 class SlackModule
 	extends WorkflowModule
@@ -72,6 +73,7 @@ class SlackModule
 			preMessage += "<${VarConsts.Var_BuildUrl.get()}|*${buildModule.getDisplayName()}*>"
 			preMessage += workflow.currentStage != Workflow.Stage_Started ? " after: ${buildModule.getDurationAsString()}" : ""
 			preMessage += email != null ? "\nTriggered By: *${email}*" : ""
+            preMessage += "Environment: ${new Var_Env("BRANCH_NAME").get()}"
 			preMessage += buildModule.getDescription() ? "\n${buildModule.getDescription()}" : ""
 			preMessage += "\n"
 		}
