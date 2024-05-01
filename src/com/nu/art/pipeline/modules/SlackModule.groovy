@@ -20,6 +20,7 @@ class SlackModule
 	private String defaultChannel
 	private BuildModule buildModule
 	private boolean enabled = true
+    private String env = ""
 
 	@Deprecated
 	SlackModule prepare() {
@@ -37,6 +38,10 @@ class SlackModule
 
 	void setTeam(String teamDomain) {
 		this.teamDomain = teamDomain
+	}
+
+	void setEnv(String env) {
+	    this.env = env;
 	}
 
 	void disable() {
@@ -73,7 +78,7 @@ class SlackModule
 			preMessage += "<${VarConsts.Var_BuildUrl.get()}|*${buildModule.getDisplayName()}*>"
 			preMessage += workflow.currentStage != Workflow.Stage_Started ? " after: ${buildModule.getDurationAsString()}" : ""
 			preMessage += email != null ? "\nTriggered By: *${email}*" : ""
-            preMessage += "Environment: ${new Var_Env("BRANCH_NAME").get()}"
+            preMessage += "\nEnvironment: ${this.env}"
 			preMessage += buildModule.getDescription() ? "\n${buildModule.getDescription()}" : ""
 			preMessage += "\n"
 		}

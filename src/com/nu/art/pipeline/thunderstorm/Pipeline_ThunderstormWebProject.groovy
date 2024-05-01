@@ -42,6 +42,7 @@ class Pipeline_ThunderstormWebProject<T extends Pipeline_ThunderstormWebProject>
 			"<${gitConfig.httpUrl}|Github>").toString()
 
 		getModule(SlackModule.class).setOnSuccess(links)
+        getModule(SlackModule.class).setEnv(branch)
 
 		setEnv(branch)
 		super.init()
