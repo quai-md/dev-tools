@@ -34,8 +34,8 @@ tsLibs=(
   ts-common
   ts-styles
   google-services
-  commando
-  build-and-install
+#  commando
+#  build-and-install
   firebase
   thunderstorm
   ts-pdf
