@@ -16,9 +16,11 @@ class PipelineTest_WriteLogs
 	@Override
 	void pipeline() {
         _sh("""
+                    ±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
         			echo "Echoed Hello World"
+        			±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
         	""")
-        this.logDebug("Logged Hello World")
+        this.logDebug("±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±\nLogged Hello World\n±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±")
 
 	}
 }
