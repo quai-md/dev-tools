@@ -128,6 +128,9 @@ NodePackage() {
 			find . -name '*.png' | cpio -pdm "${absoluteOutputDir}" > /dev/null
 			find . -name '*.jpg' | cpio -pdm "${absoluteOutputDir}" > /dev/null
 			find . -name '*.jpeg' | cpio -pdm "${absoluteOutputDir}" > /dev/null
+			find . -name '*.json' | cpio -pdm "${absoluteOutputDir}" > /dev/null
+			find . -name '*.rules' | cpio -pdm "${absoluteOutputDir}" > /dev/null
+			find . -name '*._ts' | cpio -pdm "${absoluteOutputDir}" > /dev/null
 			_cd-
 		done
 	}
