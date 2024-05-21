@@ -7,6 +7,7 @@ exec('echo YEY!!');
 
 const command = `
 echo 1
+
 export NVM_DIR="\$HOME/.nvm"
 echo "2 export NVM_DIR="\$HOME/.nvm" => $?"
 
@@ -21,10 +22,13 @@ echo "5 nvm use => $?"
 
 npm i -g ts-node@latest
 echo "6 npm i -g ts-node@latest => $?"
+
+curl -fsSL "https://get.pnpm.io/install.sh" | env PNPM_VERSION=9.1.0 sh -
 `;
 
 new Promise((resolve, reject) => {
 	console.log('RUNNING!!');
+	console.log('command: ', command);
 	exec(command, {shell: '/bin/bash'}, (error, stdout, stderr) => {
 		console.log('COMPLETED RUNNING!!');
 		if (error)
