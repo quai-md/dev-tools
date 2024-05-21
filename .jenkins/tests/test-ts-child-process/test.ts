@@ -22,7 +22,9 @@ echo 6
 new Promise((resolve, reject) => {
 	console.log('RUNNING!!');
 	exec(command, (error, stdout, stderr) => {
-		console.error(error);
+		console.log('COMPLETED RUNNING!!');
+		if (error)
+			console.error(error);
 		resolve({stdout, stderr});
 	});
 }).then(({stdout, stderr}: any) => {
