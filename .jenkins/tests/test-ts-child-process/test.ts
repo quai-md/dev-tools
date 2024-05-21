@@ -7,16 +7,20 @@ exec('echo YEY!!');
 
 const command = `
 echo 1
-export NVM_DIR="\\$HOME/.nvm"
-echo 2 $?
-[ -s "\\$NVM_DIR/nvm.sh" ] && \\\\. "\\$NVM_DIR/nvm.sh"  # This loads nvm
-echo 3 $?
+export NVM_DIR="\$HOME/.nvm"
+echo "2 export NVM_DIR="\$HOME/.nvm" => $?"
+
+[ -s "\$NVM_DIR/nvm.sh" ] && . "\$NVM_DIR/nvm.sh"  # This loads nvm
+echo "3 [ -s "\$NVM_DIR/nvm.sh" ] && . "\$NVM_DIR/nvm.sh" => $?"
+
 nvm install
-echo 4 $?
+echo "4 nvm install => $?"
+
 nvm use
-echo 5 $?
+echo "5 nvm use => $?"
+
 npm i -g ts-node@latest
-echo 6 $?
+echo "6 npm i -g ts-node@latest => $?"
 `;
 
 new Promise((resolve, reject) => {
