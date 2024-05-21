@@ -5,7 +5,7 @@ console.log('SUCCESS!!');
 
 exec('echo YEY!!');
 
-const command = `
+const commandSetup = `
 echo 1
 
 export NVM_DIR="\$HOME/.nvm"
@@ -26,20 +26,31 @@ echo "6 npm i -g ts-node@latest => $?"
 curl -fsSL "https://get.pnpm.io/install.sh" | env PNPM_VERSION=9.1.0 bash -
 `;
 
-new Promise((resolve, reject) => {
-	console.log('RUNNING!!');
-	console.log('command: ', command);
-	exec(command, {shell: '/bin/bash'}, (error, stdout, stderr) => {
-		console.log('COMPLETED RUNNING!!');
-		if (error)
-			console.error(error);
-		resolve({stdout, stderr});
+const commandPNPM = `
+echo 1
+pnpm store prune
+echo 2
+pnpm install -f --no-frozen-lockfile --prefer-offline false
+`;
+
+function execute(command: string, label: string, next?: Promise<any>) {
+	return new Promise((resolve, reject) => {
+		console.log(`${label} - RUNNING!!`);
+		console.log(`${label} - command: `, command);
+		exec(command, {shell: '/bin/bash'}, (error, stdout, stderr) => {
+			console.log(`${label} - COMPLETED RUNNING!!`);
+			if (error)
+				console.error(`${label} - error:`, error);
+			resolve({stdout, stderr});
+		});
+	}).then(({stdout, stderr}: any) => {
+		console.log(`${label} - DONE!!`);
+		console.log(`${label} - stdout:`, stdout);
+
+		console.error(`${label} - stderr:`, stderr);
+		return next;
 	});
-}).then(({stdout, stderr}: any) => {
-	console.log('DONE!!');
-	console.log('stdout:', stdout);
+}
 
-	console.error('stderr:', stderr);
-});
+execute(commandSetup, 'setup', execute(commandPNPM, 'pnpm-install'));
 
-console.log('BYE!!');
