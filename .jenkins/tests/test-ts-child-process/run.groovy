@@ -1,6 +1,7 @@
+@Library('dev-tools@prod')
+
 import com.nu.art.pipeline.modules.git.GitModule
 import com.nu.art.pipeline.modules.git.GitRepo
-@Library('dev-tools@prod')
 import com.nu.art.pipeline.workflow.BasePipeline
 import com.nu.art.pipeline.workflow.Workflow
 
@@ -8,7 +9,7 @@ class PipelineTest_ChildProcessTS
 	extends BasePipeline<PipelineTest_ChildProcessTS> {
 
 	PipelineTest_ChildProcessTS() {
-		super("Test TS Child Process")
+		super("Test TS Child Process", GitModule.class)
 	}
 
 	@Override
