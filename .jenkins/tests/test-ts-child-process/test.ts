@@ -37,9 +37,9 @@ new Promise((resolve, reject) => {
 	});
 }).then(({stdout, stderr}: any) => {
 	console.log('DONE!!');
-	console.log(stdout);
+	console.log('stdout:', stdout);
 
-	console.error(stderr);
+	console.error('stderr:', stderr);
 });
 
 console.log('BYE!!');
