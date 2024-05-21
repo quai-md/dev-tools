@@ -25,7 +25,7 @@ echo "6 npm i -g ts-node@latest => $?"
 
 new Promise((resolve, reject) => {
 	console.log('RUNNING!!');
-	exec(command, (error, stdout, stderr) => {
+	exec(command, {shell: '/bin/bash'}, (error, stdout, stderr) => {
 		console.log('COMPLETED RUNNING!!');
 		if (error)
 			console.error(error);
