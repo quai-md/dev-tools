@@ -47,9 +47,9 @@ class PipelineTest_ChildProcessTS
 				[ -s "\$NVM_DIR/nvm.sh" ] && \\. "\$NVM_DIR/nvm.sh"  # This loads nvm
 				nvm install
 				nvm use
+				npm i -g ts-node@latest
+				ts-node ./test.ts
 """)
-		_sh("""npm i -g ts-node@latest""") // install ts-node global
-		_sh("""ts-node ./test.ts""") // install ts-node global
 	}
 }
 
