@@ -24,6 +24,11 @@ npm i -g ts-node@latest
 echo "6 npm i -g ts-node@latest => $?"
 
 curl -fsSL "https://get.pnpm.io/install.sh" | env PNPM_VERSION=9.1.0 bash -
+
+echo 1
+pnpm store prune
+echo 2
+pnpm install -f --no-frozen-lockfile --prefer-offline false
 `;
 
 const commandPNPM = `
@@ -54,5 +59,6 @@ function execute(command: string, label: string, next?: () => Promise<any>) {
 	});
 }
 
-execute(commandSetup, 'setup', () => execute(commandPNPM, 'pnpm-install'));
+execute(commandSetup, 'setup');
+// execute(commandSetup, 'setup', () => execute(commandPNPM, 'pnpm-install'));
 
