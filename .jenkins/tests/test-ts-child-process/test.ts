@@ -33,7 +33,7 @@ echo 2
 pnpm install -f --no-frozen-lockfile --prefer-offline false
 `;
 
-function execute(command: string, label: string, next?: Promise<any>) {
+function execute(command: string, label: string, next?: () => Promise<any>) {
 	console.log(`-------------------- STARTED ${label} -----------------------`);
 	return new Promise((resolve, reject) => {
 		console.log(`${label} - RUNNING!!`);
@@ -44,15 +44,15 @@ function execute(command: string, label: string, next?: Promise<any>) {
 				console.error(`${label} - error:`, error);
 			resolve({stdout, stderr});
 		});
-	}).then(({stdout, stderr}: any) => {
+	}).then(async ({stdout, stderr}: any) => {
 		console.log(`${label} - DONE!!`);
 		console.log(`${label} - stdout:`, stdout);
 
 		console.error(`${label} - stderr:`, stderr);
 		console.log(`-------------------- ENDED ${label} -----------------------`);
-		return next;
+		return next?.();
 	});
 }
 
-execute(commandSetup, 'setup', execute(commandPNPM, 'pnpm-install'));
+execute(commandSetup, 'setup', () => execute(commandPNPM, 'pnpm-install'));
 
