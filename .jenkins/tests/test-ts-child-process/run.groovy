@@ -32,7 +32,11 @@ class PipelineTest_ChildProcessTS
 		_sh("""
 				echo 'export NVM_DIR="\$HOME/.nvm"' > ./install-nvm.sh"
 				echo '[ -s "\$NVM_DIR/nvm.sh" ] && \\. "\$NVM_DIR/nvm.sh"  # This loads nvm' >> ./install-nvm.sh
+
+				echo "cat file"
 				cat ./install-nvm.sh
+				echo "end of cat file"
+
 				bash ./install-nvm.sh
 """)
 		_sh("""nvm use""") // nvm rc
