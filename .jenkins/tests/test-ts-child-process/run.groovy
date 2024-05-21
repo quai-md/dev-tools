@@ -48,7 +48,7 @@ class PipelineTest_ChildProcessTS
 				nvm install
 				nvm use
 				npm i -g ts-node@latest
-				ts-node ./test.ts
+				ts-node ./.jenkins/tests/test-ts-child-process/test.ts
 """)
 	}
 }
