@@ -23,7 +23,7 @@ echo "5 nvm use => $?"
 npm i -g ts-node@latest
 echo "6 npm i -g ts-node@latest => $?"
 
-curl -fsSL "https://get.pnpm.io/install.sh" | env PNPM_VERSION=9.1.0 sh -
+curl -fsSL "https://get.pnpm.io/install.sh" | env PNPM_VERSION=9.1.0 bash -
 `;
 
 new Promise((resolve, reject) => {
