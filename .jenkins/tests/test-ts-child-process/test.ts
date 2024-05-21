@@ -34,6 +34,7 @@ pnpm install -f --no-frozen-lockfile --prefer-offline false
 `;
 
 function execute(command: string, label: string, next?: Promise<any>) {
+	console.log(`-------------------- STARTED ${label} -----------------------`);
 	return new Promise((resolve, reject) => {
 		console.log(`${label} - RUNNING!!`);
 		console.log(`${label} - command: `, command);
@@ -48,6 +49,7 @@ function execute(command: string, label: string, next?: Promise<any>) {
 		console.log(`${label} - stdout:`, stdout);
 
 		console.error(`${label} - stderr:`, stderr);
+		console.log(`-------------------- ENDED ${label} -----------------------`);
 		return next;
 	});
 }
