@@ -29,8 +29,9 @@ class PipelineTest_ChildProcessTS
 
 		_sh("""echo 18.15.0>.nvmrc""") // set nvm version
 		_sh("""curl -o- "https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh" | bash""") // install nvm
-		_sh("""export NVM_DIR="\$HOME/.nvm" """)
-		_sh("""[ -s "\$NVM_DIR/nvm.sh" ] && \\. "\$NVM_DIR/nvm.sh"  # This loads nvm """)
+		_sh("""
+				export NVM_DIR="\$HOME/.nvm"
+				[ -s "\$NVM_DIR/nvm.sh" ] && \\. "\$NVM_DIR/nvm.sh"  # This loads nvm """)
 		_sh("""nvm use""") // nvm rc
 		_sh("""npm i -g ts-node@latest""") // install ts-node global
 		_sh("""ts-node ./test.ts""") // install ts-node global
