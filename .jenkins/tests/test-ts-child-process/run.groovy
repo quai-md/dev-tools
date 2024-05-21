@@ -29,18 +29,22 @@ class PipelineTest_ChildProcessTS
 
 		_sh("""echo 18.15.0>.nvmrc""") // set nvm version
 		_sh("""curl -o- "https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh" | bash""") // install nvm
-//		_sh("""
-//				echo '#!/bin/bash'  > ./install-nvm.sh
-//				echo 'export NVM_DIR="\$HOME/.nvm"' >> ./install-nvm.sh
-//				echo '[ -s "\$NVM_DIR/nvm.sh" ] && \\. "\$NVM_DIR/nvm.sh"  # This loads nvm' >> ./install-nvm.sh
-//				echo 'nvm install' >> ./install-nvm.sh
-//				echo 'nvm use' >> ./install-nvm.sh
-//				echo "cat file"
-//				cat ./install-nvm.sh
-//				echo "end of cat file"
-//
-//				bash ./install-nvm.sh
-//""")
+
+
+		_sh("""
+cat <<EOF >package.json
+	{
+		"name": "temp",
+		"version": "0.0.1",
+		"devDependencies": {
+			"@types/node": "^18.15.0",
+			"@nu-art/build-and-install": "~0.204.38",
+			"@nu-art/commando": "~0.204.38",
+			"@nu-art/ts-common": "~0.204.38"
+		}
+	}
+EOF
+""")
 		_sh("""
 				#!/bin/bash
 				export NVM_DIR="\$HOME/.nvm"
