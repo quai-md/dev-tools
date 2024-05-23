@@ -24,10 +24,10 @@ class Pipeline_ThunderstormWebProject<T extends Pipeline_ThunderstormWebProject>
 
 	@Override
 	protected void init() {
-		String branch = Env_Branch.get()
-		String env = Env_WorkingEnv.get() ?: branch
-		getModule(SlackModule.class).setDefaultChannel(this.slackChannel)
+		String env = Env_WorkingEnv.get()
+		String branch = Env_Branch.get() ?: env
 
+		getModule(SlackModule.class).setDefaultChannel(this.slackChannel)
 
 		GitModule gitModule = getModule(GitModule.class)
 		setRepo(gitModule
