@@ -1,10 +1,12 @@
 package com.nu.art.pipeline.thunderstorm
 
 import com.nu.art.pipeline.modules.SlackModule
+import com.nu.art.pipeline.modules.build.BuildModule
 import com.nu.art.pipeline.modules.git.GitModule
 import com.nu.art.pipeline.thunderstorm.models.ProjectEnvConfig
 import com.nu.art.pipeline.thunderstorm.models.ProjectGitConfig
 import com.nu.art.pipeline.workflow.WorkflowModule
+import com.nu.art.pipeline.workflow.variables.VarConsts
 import com.nu.art.pipeline.workflow.variables.Var_Env
 
 class Pipeline_ThunderstormWebProject<T extends Pipeline_ThunderstormWebProject>
@@ -63,6 +65,11 @@ class Pipeline_ThunderstormWebProject<T extends Pipeline_ThunderstormWebProject>
 
 	void declareEnv(String env, ProjectEnvConfig envConfig) {
 		envProjects.put(env, envConfig)
+	}
+
+	void setDisplayName() {
+		def version = getVersion() ? " - v${getVersion()}" : ""
+		getModule(BuildModule.class).setDisplayName("#${VarConsts.Var_BuildNumber.get()}: ${getName()}${this.env}${version}")
 	}
 
 	@Override
