@@ -10,6 +10,7 @@ import com.nu.art.pipeline.workflow.variables.Var_Env
 class Pipeline_ThunderstormWebProject<T extends Pipeline_ThunderstormWebProject>
 	extends Pipeline_ThunderstormWebApp<T> {
 
+	public Var_Env Env_WorkingEnv = new Var_Env("WORKING_ENV")
 	public Var_Env Env_Branch = new Var_Env("BRANCH_NAME")
 
 	ProjectGitConfig gitConfig
@@ -24,6 +25,7 @@ class Pipeline_ThunderstormWebProject<T extends Pipeline_ThunderstormWebProject>
 	@Override
 	protected void init() {
 		String branch = Env_Branch.get()
+		String env = Env_WorkingEnv.get() ?: branch
 		getModule(SlackModule.class).setDefaultChannel(this.slackChannel)
 
 
@@ -35,7 +37,7 @@ class Pipeline_ThunderstormWebProject<T extends Pipeline_ThunderstormWebProject>
 			.build())
 
 
-		ProjectEnvConfig envConfig = envProjects.get(branch) as ProjectEnvConfig
+		ProjectEnvConfig envConfig = envProjects.get(env) as ProjectEnvConfig
 		String links = ("" +
 			"<${envConfig.webAppUrl}|WebApp> | " +
 			"<${envConfig.firebaseProjectUrl}|Firebase> | " +
@@ -43,7 +45,7 @@ class Pipeline_ThunderstormWebProject<T extends Pipeline_ThunderstormWebProject>
 
 		getModule(SlackModule.class).setOnSuccess(links)
 
-		setEnv(branch)
+		setEnv(env)
 		super.init()
 	}
 
