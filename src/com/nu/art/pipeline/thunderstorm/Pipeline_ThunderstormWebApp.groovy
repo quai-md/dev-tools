@@ -6,7 +6,6 @@ class Pipeline_ThunderstormWebApp<T extends Pipeline_ThunderstormWebApp>
 	extends Pipeline_ThunderstormCore<T> {
 
 	protected String env
-	protected String fallEnv
 
 	Pipeline_ThunderstormWebApp(GString name, Class<? extends WorkflowModule>... modules = []) {
 		this(name.toString(), modules)
@@ -20,9 +19,8 @@ class Pipeline_ThunderstormWebApp<T extends Pipeline_ThunderstormWebApp>
 		super(modules)
 	}
 
-	protected void setEnv(String env, String fallEnv = "") {
+	protected void setEnv(String env) {
 		this.env = env
-		this.fallEnv = fallEnv
 	}
 
 	protected T deploy() {
@@ -31,7 +29,7 @@ class Pipeline_ThunderstormWebApp<T extends Pipeline_ThunderstormWebApp>
 	}
 
 	protected void _install() {
-		_sh("bash build-and-install.sh --set-env=${this.env} -fe=${this.fallEnv} --install --no-build --link --debug")
+		_sh("bash build-and-install.sh --set-env=${this.env} --install --no-build --link --debug")
 	}
 
 	protected void _deploy() {

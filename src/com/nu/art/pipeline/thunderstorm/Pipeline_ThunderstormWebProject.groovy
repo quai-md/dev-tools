@@ -1,15 +1,18 @@
 package com.nu.art.pipeline.thunderstorm
 
 import com.nu.art.pipeline.modules.SlackModule
+import com.nu.art.pipeline.modules.build.BuildModule
 import com.nu.art.pipeline.modules.git.GitModule
 import com.nu.art.pipeline.thunderstorm.models.ProjectEnvConfig
 import com.nu.art.pipeline.thunderstorm.models.ProjectGitConfig
 import com.nu.art.pipeline.workflow.WorkflowModule
+import com.nu.art.pipeline.workflow.variables.VarConsts
 import com.nu.art.pipeline.workflow.variables.Var_Env
 
 class Pipeline_ThunderstormWebProject<T extends Pipeline_ThunderstormWebProject>
 	extends Pipeline_ThunderstormWebApp<T> {
 
+	public Var_Env Env_WorkingEnv = new Var_Env("WORKING_ENV")
 	public Var_Env Env_Branch = new Var_Env("BRANCH_NAME")
 
 	ProjectGitConfig gitConfig
@@ -23,9 +26,10 @@ class Pipeline_ThunderstormWebProject<T extends Pipeline_ThunderstormWebProject>
 
 	@Override
 	protected void init() {
-		String branch = Env_Branch.get()
-		getModule(SlackModule.class).setDefaultChannel(this.slackChannel)
+		String env = Env_WorkingEnv.get()
+		String branch = Env_Branch.get() ?: env
 
+		getModule(SlackModule.class).setDefaultChannel(this.slackChannel)
 
 		GitModule gitModule = getModule(GitModule.class)
 		setRepo(gitModule
@@ -35,7 +39,7 @@ class Pipeline_ThunderstormWebProject<T extends Pipeline_ThunderstormWebProject>
 			.build())
 
 
-		ProjectEnvConfig envConfig = envProjects.get(branch) as ProjectEnvConfig
+		ProjectEnvConfig envConfig = envProjects.get(env) as ProjectEnvConfig
 		String links = ("" +
 			"<${envConfig.webAppUrl}|WebApp> | " +
 			"<${envConfig.firebaseProjectUrl}|Firebase> | " +
@@ -43,7 +47,7 @@ class Pipeline_ThunderstormWebProject<T extends Pipeline_ThunderstormWebProject>
 
 		getModule(SlackModule.class).setOnSuccess(links)
 
-		setEnv(branch)
+		setEnv(env)
 		super.init()
 	}
 
@@ -61,6 +65,11 @@ class Pipeline_ThunderstormWebProject<T extends Pipeline_ThunderstormWebProject>
 
 	void declareEnv(String env, ProjectEnvConfig envConfig) {
 		envProjects.put(env, envConfig)
+	}
+
+	void setDisplayName() {
+		def version = getVersion() ? " - v${getVersion()}" : ""
+		getModule(BuildModule.class).setDisplayName("#${VarConsts.Var_BuildNumber.get()}: ${getName()}${this.env}${version}")
 	}
 
 	@Override
