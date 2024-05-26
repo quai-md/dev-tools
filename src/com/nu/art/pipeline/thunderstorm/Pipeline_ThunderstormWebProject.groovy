@@ -28,6 +28,7 @@ class Pipeline_ThunderstormWebProject<T extends Pipeline_ThunderstormWebProject>
 	protected void init() {
 		String env = Env_WorkingEnv.get()
 		String branch = Env_Branch.get() ?: env
+        env = env ?: branch
 
 		getModule(SlackModule.class).setDefaultChannel(this.slackChannel)
 
