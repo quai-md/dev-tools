@@ -260,7 +260,6 @@ Workspace() {
 	_installGlobalPackages() {
 		if [[ "${ts_installGlobals}" ]]; then
 			logInfo "Installing global packages..."
-			npm uninstall -g typescript
 			npm i -g typescript@${CONST_Version_Typescript} eslint@${CONST_Version_ESlint} firebase-tools@${CONST_Version_FirebaseTools} sort-package-json@latest sort-json@latest
 			firebase.setPath
 		fi
