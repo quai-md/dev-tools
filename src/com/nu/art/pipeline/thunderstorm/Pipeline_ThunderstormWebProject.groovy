@@ -70,7 +70,7 @@ class Pipeline_ThunderstormWebProject<T extends Pipeline_ThunderstormWebProject>
 
 	void setDisplayName() {
 		def version = getVersion() ? " - v${getVersion()}" : ""
-		getModule(BuildModule.class).setDisplayName("#${VarConsts.Var_BuildNumber.get()}: ${getName()}${this.env}${version}")
+		getModule(BuildModule.class).setDisplayName("#${VarConsts.Var_BuildNumber.get()}: ${getName()} ${this.env} ${version}")
 	}
 
 	@Override
