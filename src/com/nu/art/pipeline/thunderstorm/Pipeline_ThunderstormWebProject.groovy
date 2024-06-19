@@ -13,7 +13,7 @@ class Pipeline_ThunderstormWebProject<T extends Pipeline_ThunderstormWebProject>
 	extends Pipeline_ThunderstormWebApp<T> {
 
 	public Var_Env Env_WorkingEnv = new Var_Env("DEPLOY_TO_ENV")
-	public Var_Env Env_Branch = new Var_Env("BRANCH_NAME")
+	public Var_Env Env_Branch = new Var_Env("GIT_CLONE_BRANCH")
 
 	ProjectGitConfig gitConfig
 	def envProjects = [:]
