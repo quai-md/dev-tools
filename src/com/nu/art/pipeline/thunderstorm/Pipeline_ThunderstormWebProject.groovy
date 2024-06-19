@@ -12,7 +12,7 @@ import com.nu.art.pipeline.workflow.variables.Var_Env
 class Pipeline_ThunderstormWebProject<T extends Pipeline_ThunderstormWebProject>
 	extends Pipeline_ThunderstormWebApp<T> {
 
-	public Var_Env Env_WorkingEnv = new Var_Env("WORKING_ENV")
+	public Var_Env Env_WorkingEnv = new Var_Env("DEPLOY_TO_ENV")
 	public Var_Env Env_Branch = new Var_Env("BRANCH_NAME")
 
 	ProjectGitConfig gitConfig
