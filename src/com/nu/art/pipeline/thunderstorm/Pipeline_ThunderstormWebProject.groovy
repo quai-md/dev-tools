@@ -12,8 +12,8 @@ import com.nu.art.pipeline.workflow.variables.Var_Env
 class Pipeline_ThunderstormWebProject<T extends Pipeline_ThunderstormWebProject>
 	extends Pipeline_ThunderstormWebApp<T> {
 
-	public Var_Env Env_DeployToEnv = new Var_Env("DEPLOY_TO_ENV")
-	public Var_Env Env_Branch = new Var_Env("GIT_CLONE_BRANCH")
+	public Var_Env Env_WorkingEnv = new Var_Env("WORKING_ENV")
+	public Var_Env Env_Branch = new Var_Env("BRANCH_NAME")
 
 	ProjectGitConfig gitConfig
 	def envProjects = [:]
@@ -26,7 +26,7 @@ class Pipeline_ThunderstormWebProject<T extends Pipeline_ThunderstormWebProject>
 
 	@Override
 	protected void init() {
-		String env = Env_DeployToEnv.get()
+		String env = Env_WorkingEnv.get()
 		String branch = Env_Branch.get() ?: env
         env = env ?: branch
 
