@@ -108,8 +108,10 @@ fi
 
 # Installing Jenkins
 if [[ "${setupJenkins}" ]]; then
-    executeCommand "wget -q -O - https://pkg.jenkins.io/debian/jenkins-ci.org.key | sudo apt-key add -" "Resolving Jenkins - 1"
-    executeCommand "echo deb http://pkg.jenkins.io/debian-stable binary/ | sudo tee /etc/apt/sources.list.d/jenkins.list" "Resolving Jenkins - 2"
+    executeCommand "sudo wget -O /usr/share/keyrings/jenkins-keyring.asc https://pkg.jenkins.io/debian-stable/jenkins.io-2023.key" "Resolving Jenkins - 1"
+    executeCommand "echo \"deb [signed-by=/usr/share/keyrings/jenkins-keyring.asc]\" https://pkg.jenkins.io/debian-stable binary/ | sudo tee /etc/apt/sources.list.d/jenkins.list > /dev/null" "Resolving Jenkins - 2"
+#    executeCommand "wget -q -O - https://pkg.jenkins.io/debian/jenkins-ci.org.key | sudo apt-key add -" "Resolving Jenkins - 1"
+#    executeCommand "echo deb http://pkg.jenkins.io/debian-stable binary/ | sudo tee /etc/apt/sources.list.d/jenkins.list" "Resolving Jenkins - 2"
 
     executeCommand "sudo apt-get update"
     executeCommand "sudo apt-get install -y jenkins" "Install Jenkins"
@@ -126,17 +128,13 @@ if [[ "${setupNodeAndNpm}" ]]; then
     executeCommand "sudo npm i -g firebase-tools"
 fi
 
-# Open ports
-executeCommand "sudo ufw allow 8080" "Open port 8080"
-executeCommand "sudo ufw allow 22" "Open port 22"
-executeCommand "sudo ufw status" "Status of ufw"
+executeCommand "sudo cat /var/lib/jenkins/secrets/initialAdminPassword" "Displaying Jenkins Admin Password"
 
 # Install Android SDK
 executeCommand "installAndroidSDK_JENKINS" "Install Android SDK"
 executeCommand "setupAndroidEnvironmentVariables_JENKINS" "Setup Android SDK and NDK Environment"
 
 
-executeCommand "sudo cat /var/lib/jenkins/secrets/initialAdminPassword" "Displaying Jenkins Admin Password"
 
 #executeCommand "sudo ufw enable" "Enable ufw"
 #executeCommand "sudo systemctl status jenkins" "Check Jenkins Status"

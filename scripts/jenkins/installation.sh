@@ -23,4 +23,4 @@ if [[ -e "dev-tools" ]]; then
 else
     git clone https://github.com/nu-art/dev-tools.git
 fi
-bash ./dev-tools/scripts/jenkins/_setup.sh
+bash ./dev-tools/scripts/jenkins/_setup-jenkins.sh
