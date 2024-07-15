@@ -44,7 +44,7 @@ class GitModule
 		try {
 			workflow.writeToFile(pathToFile, JsonOutput.toJson(jobGitStatus))
 			workflow.archiveArtifacts checkoutStatusFileName
-		} catch (exception) {
+		} catch (Throwable exception) {
 			this.logError("Error writing last git status file", exception)
 		}
 	}
@@ -76,7 +76,7 @@ class GitModule
 					.filter(checkoutStatusFileName)
 					.output(".input")
 					.copy()
-			} catch (exception) {
+			} catch (Throwable exception) {
 				this.logError("Error getting last status file", exception)
 				return null
 			}
