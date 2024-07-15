@@ -66,11 +66,16 @@ class GitModule
 			if (build == null)
 				return null
 
-			getModule(BuildModule.class)
-				.copyArtifacts(VarConsts.Var_JobName.get(), build.getNumber())
-				.filter(checkoutStatusFileName)
-				.output(".input")
-				.copy()
+			try {
+				getModule(BuildModule.class)
+					.copyArtifacts(VarConsts.Var_JobName.get(), build.getNumber())
+					.filter(checkoutStatusFileName)
+					.output(".input")
+					.copy()
+			} catch (exception) {
+				this.logError("Error getting last status file", exception)
+				return null
+			}
 
 			String pathToFile = ".input/${checkoutStatusFileName}"
 			if (!workflow.fileExists(pathToFile))
