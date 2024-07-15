@@ -46,8 +46,13 @@ executeCommand "sudo wget -O /usr/share/keyrings/jenkins-keyring.asc https://pkg
 executeCommand "echo \"deb [signed-by=/usr/share/keyrings/jenkins-keyring.asc]\" https://pkg.jenkins.io/debian-stable binary/ | sudo tee /etc/apt/sources.list.d/jenkins.list > /dev/null" "Resolving Jenkins - 2"
 
 executeCommand "sudo apt-get update"
-executeCommand "sudo apt-get install fontconfig openjdk-17-jre" "Install Open JRE 17"
+executeCommand "sudo apt-get install -y fontconfig" "Install fontconfig"
+executeCommand "sudo apt-get install -y openjdk-17-jre" "Install Open JRE 17"
 executeCommand "sudo apt-get install -y jenkins" "Install Jenkins"
 executeCommand "sudo systemctl start jenkins" "Start Jenkins"
-
 executeCommand "sudo cat /var/lib/jenkins/secrets/initialAdminPassword" "Displaying Jenkins Admin Password"
+
+executeCommand "sudo su jenkins && cd ~" "Switch to Jenkins user"
+executeCommand "ssh-keygen -t rsa -b 4096 -f ~/.ssh/id_rsa -N \"\" -C \"jenkins@nu-art-software.com\"" "Generate SSH key"
+
+executeCommand "cat /var/lib/jenkins/.ssh/id_rsa.pub" "Displaying SSH Public Key"

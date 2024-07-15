@@ -112,11 +112,11 @@ public class BuildModule
 	}
 
 	String pathToFile(String pathToFile) {
-		return this.pathToFileImpl(pathToFile, null)
+		return this.pathToFileImpl(pathToFile, workflow.getCurrentBuild())
 	}
 
-	String pathToFileImpl(String pathToFile, RunWrapper build = null) {
-		if (build == workflow.getCurrentBuild() || build == null) {
+	String pathToFileImpl(String pathToFile, RunWrapper build) {
+		if (build == workflow.getCurrentBuild()) {
 			return "${VarConsts.Var_Workspace.get()}/${pathToFile}"
 		}
 
