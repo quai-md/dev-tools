@@ -41,8 +41,12 @@ class GitModule
 		repoStatus.put(repo.config.branch, new GitStatus(repo.config.branch, commitId))
 		jobGitStatus.put(repo.getUrl(), repoStatus)
 		String pathToFile = getModule(BuildModule.class).pathToFile(checkoutStatusFileName)
-		workflow.writeToFile(pathToFile, JsonOutput.toJson(jobGitStatus))
-		workflow.archiveArtifacts checkoutStatusFileName
+		try {
+			workflow.writeToFile(pathToFile, JsonOutput.toJson(jobGitStatus))
+			workflow.archiveArtifacts checkoutStatusFileName
+		} catch (exception) {
+			this.logError("Error writing last git status file", exception)
+		}
 	}
 
 	GitStatus gitStatus(GitRepo repo, RunWrapper build = null) {
