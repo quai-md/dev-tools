@@ -112,14 +112,10 @@ public class BuildModule
 	}
 
 	String pathToFile(String pathToFile) {
-		return this.pathToFileImpl(pathToFile, workflow.getCurrentBuild())
+		return "${VarConsts.Var_Workspace.get()}/${pathToFile}"
 	}
 
 	String pathToFileImpl(String pathToFile, RunWrapper build) {
-		if (build == workflow.getCurrentBuild()) {
-			return "${VarConsts.Var_Workspace.get()}/${pathToFile}"
-		}
-
 		return "${VarConsts.Var_JenkinsHome.get()}/jobs/${VarConsts.Var_JobName.get()}/builds/${build.getNumber()}/${pathToFile}"
 	}
 
