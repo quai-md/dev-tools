@@ -1,8 +1,10 @@
 #!/bin/bash
 
 node.replaceVarsWithValues() {
-  local __packageJson=${1:-"./__package.json"}
-  local packageJson="$(file.pathToFile "${__packageJson}")/package.json"
+  local overrideValue=${1}
+  local targetFileName=${2:-"package.json"}
+  local __packageJson=${3:-"./__package.json"}
+  local packageJson="$(file.pathToFile "${__packageJson}")/${targetFileName}"
 
   file.delete "${packageJson}" -n
   file.copy "${__packageJson}" "" "${packageJson}" -n
@@ -28,7 +30,14 @@ node.replaceVarsWithValues() {
 
   replaceWithVersion() {
     local envVar="${1}"
-    local version="${!envVar}"
+    local version
+
+    if [[ "${overrideValue}" == "" ]]; then
+      version="${!envVar}"
+    else
+      version="${overrideValue}"
+    fi
+
     file.replaceAll ".${envVar}" "${version}" "${packageJson}" %
   }
 
