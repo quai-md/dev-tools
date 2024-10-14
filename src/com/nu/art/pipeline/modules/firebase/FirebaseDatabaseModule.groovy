@@ -20,9 +20,9 @@ class FirebaseDatabaseModule
          echo ------------------------------ source
          . \$HOME/.nvm/nvm.sh > /dev/null 2>&1
          echo ------------------------------ install
-         nvm install 18.15.0
+         nvm install 18.15.0 > /dev/null 2>&1
          echo ------------------------------ use
-         nvm use 18.15.0
+         nvm use 18.15.0 
          echo ------------------------------ npm install
          npm install -g firebase-tools
         """)
