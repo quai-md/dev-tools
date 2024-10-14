@@ -51,7 +51,7 @@ class FirebaseDatabaseModule
       def result = sh("""
          . \$HOME/.nvm/nvm.sh > /dev/null 2>&1
          nvm use 18.15.0  > /dev/null 2>&1
-
+        echo "firebase database:get ${path} --project ${projectId} --database-url=${databaseUrl}"
         firebase database:get ${path} --project ${projectId} --database-url=${databaseUrl}
       """, true).trim()
       if (result == "null" || result.isEmpty())
@@ -107,3 +107,10 @@ class FirebaseDatabaseModule
     return (T) new JsonSlurper().parseText(output)
   }
 }
+
+
+
+
+
+
+
