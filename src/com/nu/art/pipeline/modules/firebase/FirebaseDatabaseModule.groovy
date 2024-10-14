@@ -22,7 +22,7 @@ class FirebaseDatabaseModule
          echo ------------------------------ install
          nvm install 18.15.0 > /dev/null 2>&1
          echo ------------------------------ use
-         nvm use 18.15.0 
+         nvm use 18.15.0  > /dev/null 2>&1
          echo ------------------------------ npm install
          npm install -g firebase-tools
         """)
@@ -39,7 +39,7 @@ class FirebaseDatabaseModule
   private void setValue(String path, String value, String projectId = this.defaultProjectId, String databaseUrl = this.defaultDatabaseUrl) {
     sh("""
          . \$HOME/.nvm/nvm.sh > /dev/null 2>&1
-         nvm use 18.15.0
+         nvm use 18.15.0 > /dev/null 2>&1
           
           firebase database:set ${path} ${value} --data '${valueJson} --project ${projectId} --database-url=${databaseUrl}
       """)
@@ -50,7 +50,7 @@ class FirebaseDatabaseModule
     try {
       def result = sh("""
          . \$HOME/.nvm/nvm.sh > /dev/null 2>&1
-         nvm use 18.15.0
+         nvm use 18.15.0  > /dev/null 2>&1
 
         firebase database:get ${path} --project ${projectId} --database-url=${databaseUrl}
       """, true).trim()
