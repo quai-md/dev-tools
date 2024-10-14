@@ -49,7 +49,8 @@ class FirebaseDatabaseModule
   private String getValue(String path, String projectId = this.defaultProjectId, String databaseUrl = this.defaultDatabaseUrl) {
     try {
       def result = sh("""
-         nvm use 18.15.0
+        . \$HOME/.nvm/nvm.sh > /dev/null 2>&1
+        nvm use 18.15.0
         echo "firebase database:get ${path} --project ${projectId} --database-url=${databaseUrl}"
         firebase database:get ${path} --project ${projectId} --database-url=${databaseUrl}
       """, true).trim()
