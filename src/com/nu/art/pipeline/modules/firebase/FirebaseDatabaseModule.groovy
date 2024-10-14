@@ -14,6 +14,17 @@ class FirebaseDatabaseModule
   void _init() {
   }
 
+  void install() {
+    sh("""
+          curl -o- \"https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh\" | bash
+          echo running
+         . \$HOME/.nvm/nvm.sh > /dev/null 2>&1
+         nvm install 18.15.0
+         nvm use 18.15.0
+         npm install -g firebase-tools
+        """)
+  }
+
   void setDefaultDatabaseUrl(String defaultDatabaseUrl) {
     this.defaultDatabaseUrl = defaultDatabaseUrl
   }
@@ -23,7 +34,12 @@ class FirebaseDatabaseModule
   }
 
   private void setValue(String path, String value, String projectId = this.defaultProjectId, String databaseUrl = this.defaultDatabaseUrl) {
-    sh("firebase database:set ${path} ${value} --data '${valueJson}' --project ${projectId} --database-url=${databaseUrl}")
+    sh("""
+         . \\$HOME/.nvm/nvm.sh > /dev/null 2>&1
+         nvm use 18.15.0
+          
+          firebase database:set ${path} ${value} --data '${valueJson} --project ${projectId} --database-url=${databaseUrl}
+      """)
   }
 
   // Get a value from RTDB as a String
@@ -48,7 +64,12 @@ class FirebaseDatabaseModule
   void setNumber(String path, Number value, String projectId = this.defaultProjectId, String databaseUrl = this.defaultDatabaseUrl) {
     this.setValue(path, "${value}", projectId, databaseUrl)
 
-    sh("firebase database:set ${value} --data '${valueJson}' --project ${projectId} --database-url=${databaseUrl}")
+    sh("""
+         . \$HOME/.nvm/nvm.sh > /dev/null 2>&1
+         nvm use 18.15.0
+
+          firebase database:set ${value} --data '${valueJson} --project ${projectId} --database-url=${databaseUrl}
+      """)
   }
 
 // Set a value in RTDB
