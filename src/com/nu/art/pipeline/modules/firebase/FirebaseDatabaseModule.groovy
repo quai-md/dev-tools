@@ -35,7 +35,7 @@ class FirebaseDatabaseModule
 
   private void setValue(String path, String value, String projectId = this.defaultProjectId, String databaseUrl = this.defaultDatabaseUrl) {
     sh("""
-         . \\$HOME/.nvm/nvm.sh > /dev/null 2>&1
+         . \$HOME/.nvm/nvm.sh > /dev/null 2>&1
          nvm use 18.15.0
           
           firebase database:set ${path} ${value} --data '${valueJson} --project ${projectId} --database-url=${databaseUrl}
