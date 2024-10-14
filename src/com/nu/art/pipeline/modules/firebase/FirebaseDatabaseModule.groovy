@@ -16,8 +16,8 @@ class FirebaseDatabaseModule
 
   void install() {
     sh("""
-          curl -o- \"https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh\" | bash
-          echo running
+         curl -o- \"https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/install.sh\" | bash
+         echo running
          . \$HOME/.nvm/nvm.sh > /dev/null 2>&1
          nvm install 18.15.0
          nvm use 18.15.0
