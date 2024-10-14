@@ -1,3 +1,4 @@
+import com.nu.art.pipeline.exceptions.BadImplementationException
 @Library('dev-tools@prod')
 
 import com.nu.art.pipeline.modules.SlackModule
@@ -29,8 +30,36 @@ class PipelineTest_FirebaseIntegration
   @Override
   void pipeline() {
     getModule(FirebaseDatabaseModule.class).disable()
-    addStage("Read from Database", {
-      firebaseDatabaseModule.getValue("/tesing/test1", "test1-results")
+    this.testString()
+  }
+
+  void testString() {
+    String testString = UUID.randomUUID().toString()
+    String pathToStringTest = "/testing/test-string"
+
+    addStage("Write String", {
+      firebaseDatabaseModule.setValue(pathToStringTest, testString)
+    })
+
+    addStage("Read String", {
+      const response = firebaseDatabaseModule.getValue(pathToStringTest, "default-test1-results")
+      if (response != testString)
+        throw new BadImplementationException("expected '${testString}' but got '${response}'")
+    })
+  }
+
+  void testNumber() {
+    int testInt = new Random().nextInt()
+    String pathToStringTest = "/testing/test-number"
+
+    addStage("Write Number", {
+      firebaseDatabaseModule.setNumber(pathToStringTest, testInt)
+    })
+
+    addStage("Read Number", {
+      const response = firebaseDatabaseModule.getNumber(pathToStringTest, null)
+      if (response != testInt)
+        throw new BadImplementationException("expected '${testInt}' but got '${response}'")
     })
   }
 }
