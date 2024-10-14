@@ -5,42 +5,46 @@ import com.nu.art.pipeline.workflow.variables.Var_Env
 import org.jenkinsci.plugins.workflow.support.steps.build.RunWrapper
 
 class JobTrigger
-	implements Serializable {
+  implements Serializable {
 
-	String name
-	Workflow workflow
-	def params = []
-	boolean wait = true
+  String name
+  Workflow workflow
+  def params = []
+  boolean wait = true
 
-	JobTrigger(Workflow workflow, String name) {
-		this.name = name
-		this.workflow = workflow
-	}
+  JobTrigger(Workflow workflow, String name) {
+    this.name = name
+    this.workflow = workflow
+  }
 
-	JobTrigger addString(String key, String value) {
-		return this.addParam(JobParam.Param_String, key.toString(), value)
-	}
+  JobTrigger addString(String key, String value) {
+    return this.addParam(JobParam.Param_String, key.toString(), value)
+  }
 
-	JobTrigger addString(Var_Env envVar) {
-		return this.addParam(JobParam.Param_String, envVar.varName, envVar.get())
-	}
+  JobTrigger addString(Var_Env envVar) {
+    this.addString(envVar, null)
+  }
 
-	JobTrigger addBoolean(String key, Boolean value) {
-		return this.addParam(JobParam.Param_Boolean, key.toString(), value)
-	}
+  JobTrigger addString(Var_Env envVar, String fallbackValue) {
+    return this.addParam(JobParam.Param_String, envVar.varName, envVar.get() ?: fallbackValue)
+  }
 
-	JobTrigger setWait(boolean wait) {
-		this.wait = wait
-		return this
-	}
+  JobTrigger addBoolean(String key, Boolean value) {
+    return this.addParam(JobParam.Param_Boolean, key.toString(), value)
+  }
 
-	private <T> JobTrigger addParam(JobParam<T> type, String key, T value) {
-		params += [$class: type.key, name: key, value: value.toString()]
-		return this
-	}
+  JobTrigger setWait(boolean wait) {
+    this.wait = wait
+    return this
+  }
 
-	RunWrapper run() {
-		RunWrapper result = workflow.script.build job: name, parameters: params, wait: wait
-		return result
-	}
+  private <T> JobTrigger addParam(JobParam<T> type, String key, T value) {
+    params += [$class: type.key, name: key, value: value.toString()]
+    return this
+  }
+
+  RunWrapper run() {
+    RunWrapper result = workflow.script.build job: name, parameters: params, wait: wait
+    return result
+  }
 }
