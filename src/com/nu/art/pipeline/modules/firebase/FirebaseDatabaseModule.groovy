@@ -52,7 +52,7 @@ class FirebaseDatabaseModule
   }
 
 // Set a value in RTDB
-  <T> void setObj(String path, T value, String projectId = this.defaultProjectId, String databaseUrl = this.defaultDatabaseUrl) {
+  def <T> void setObj(String path, T value, String projectId = this.defaultProjectId, String databaseUrl = this.defaultDatabaseUrl) {
     String valueJson = JsonOutput.toJson(value)
     this.setValue(path, "'${valueJson}'", projectId, databaseUrl)
   }
@@ -77,7 +77,7 @@ class FirebaseDatabaseModule
   }
 
 // Generic method to get a value from RTDB
-  <T> T getObj(String path, T defaultValue, String projectId = this.defaultProjectId, String databaseUrl = this.defaultDatabaseUrl) {
+  def <T> T getObj(String path, T defaultValue, String projectId = this.defaultProjectId, String databaseUrl = this.defaultDatabaseUrl) {
     String output = this.getValue(path, projectId, databaseUrl)
     if (output == null)
       return defaultValue
