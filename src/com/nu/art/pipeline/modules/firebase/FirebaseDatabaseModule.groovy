@@ -45,7 +45,12 @@ class FirebaseDatabaseModule
   // Get a value from RTDB as a String
   private String getValue(String path, String projectId = this.defaultProjectId, String databaseUrl = this.defaultDatabaseUrl) {
     try {
-      def result = sh("firebase database:get ${path} --project ${projectId} --database-url=${databaseUrl}", true).trim()
+      def result = sh("""
+         . \$HOME/.nvm/nvm.sh > /dev/null 2>&1
+         nvm use 18.15.0
+
+        firebase database:get ${path} --project ${projectId} --database-url=${databaseUrl}
+      """, true).trim()
       if (result == "null" || result.isEmpty())
         return null
 
@@ -63,13 +68,6 @@ class FirebaseDatabaseModule
 
   void setNumber(String path, Number value, String projectId = this.defaultProjectId, String databaseUrl = this.defaultDatabaseUrl) {
     this.setValue(path, "${value}", projectId, databaseUrl)
-
-    sh("""
-         . \$HOME/.nvm/nvm.sh > /dev/null 2>&1
-         nvm use 18.15.0
-
-          firebase database:set ${value} --data '${valueJson} --project ${projectId} --database-url=${databaseUrl}
-      """)
   }
 
 // Set a value in RTDB
