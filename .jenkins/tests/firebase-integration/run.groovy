@@ -28,6 +28,10 @@ class PipelineTest_FirebaseIntegration
 
   @Override
   void pipeline() {
+    bash("""
+        nvm use 18.15.0
+        firebase list
+      """)
     firebaseDatabaseModule.install()
     this.testString()
     this.testNumber()
@@ -36,10 +40,6 @@ class PipelineTest_FirebaseIntegration
   void testString() {
     String testString = UUID.randomUUID().toString()
     String pathToStringTest = "/testing/test-string"
-//    bash("""
-//        nvm use 18.15.0
-//        firebase list
-//      """)
 
     addStage("Write String", {
       firebaseDatabaseModule.setValue(pathToStringTest, testString)
@@ -77,7 +77,7 @@ podTemplate(yaml: '''
     spec:
       containers:
         - name: test-container
-          image: us-docker.pkg.dev/quai-md-jenkins-new-test-v1/jenkins-old-server/jenkins-slave:22-05-24-15h-04m
+          image: us-central1-docker.pkg.dev/quai-md-jenkins-new-test-v1/runtime/prod-deploy:latest
           tty: true
           resources:
             limits:
