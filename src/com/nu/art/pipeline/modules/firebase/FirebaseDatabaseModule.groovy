@@ -46,7 +46,7 @@ class FirebaseDatabaseModule
     String instance = databaseUrl ? " --instance=${databaseUrl}" : ""
 
     def command = "firebase database:set ${path} --data '${value}' --project ${projectId} --force ${instance}"
-    this.logWarning("'${command}'")
+    this.logDebug("'${command}'")
     bash("""
          ${installViaNVM ? prefix : ""}
          ${command}
@@ -57,10 +57,12 @@ class FirebaseDatabaseModule
   private String getValue(String path, String projectId = this.defaultProjectId, String databaseUrl = this.defaultDatabaseUrl) {
     try {
       String instance = databaseUrl ? " --instance=${databaseUrl}" : ""
+      def command = "firebase database:get ${path} --project ${projectId} ${instance}"
+      this.logDebug("'${command}'")
 
       def result = bash("""
           ${installViaNVM ? prefix : ""}
-          firebase database:get ${path} --project ${projectId} ${instance}
+          ${command}
       """, true).trim()
 
       if (result == "null" || result.isEmpty())
