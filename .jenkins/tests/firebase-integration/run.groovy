@@ -31,6 +31,7 @@ class PipelineTest_FirebaseIntegration
     firebaseDatabaseModule.install()
     this.testString()
     this.testNumber()
+    this.testObject()
   }
 
   void testString() {
@@ -59,6 +60,24 @@ class PipelineTest_FirebaseIntegration
     addStage("Read Number", {
       Number response = firebaseDatabaseModule.getNumber(pathToStringTest, null)
       if (response != testInt)
+        throw new BadImplementationException("expected '${testInt}' but got '${response}'")
+    })
+  }
+
+  void testObject() {
+    int testInt = new Random().nextInt()
+    String testString = UUID.randomUUID().toString()
+
+    String pathToStringTest = "/testing/test-object"
+    def toSave = [number: testInt, label: testString]
+
+    addStage("Write Object", {
+      firebaseDatabaseModule.setObj(pathToStringTest, toSave)
+    })
+
+    addStage("Read Object", {
+      def response = firebaseDatabaseModule.getObj(pathToStringTest, [number: testInt + 1, label: testString])
+      if (response != toSave)
         throw new BadImplementationException("expected '${testInt}' but got '${response}'")
     })
   }
