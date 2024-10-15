@@ -36,7 +36,10 @@ class PipelineTest_FirebaseIntegration
   void testString() {
     String testString = UUID.randomUUID().toString()
     String pathToStringTest = "/testing/test-string"
-    bash("firebase list")
+//    bash("""
+//        nvm use 18.15.0
+//        firebase list
+//      """)
 
     addStage("Write String", {
       firebaseDatabaseModule.setValue(pathToStringTest, testString)
