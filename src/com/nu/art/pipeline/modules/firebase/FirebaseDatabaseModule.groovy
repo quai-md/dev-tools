@@ -45,7 +45,7 @@ class FirebaseDatabaseModule
   private void setValue(String path, String value, String projectId = this.defaultProjectId, String databaseUrl = this.defaultDatabaseUrl) {
     String instance = databaseUrl ? " --instance=${databaseUrl}" : ""
 
-    def command = "firebase database:set ${path} --data ${value} --project ${projectId} --force ${instance}"
+    def command = "firebase database:set ${path} --data '${value}' --project ${projectId} --force ${instance}"
     this.logWarning("'${command}'")
     bash("""
           ${installViaNVM ? prefix : ""}
