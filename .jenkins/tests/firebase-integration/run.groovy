@@ -43,7 +43,7 @@ class PipelineTest_FirebaseIntegration
     })
 
     addStage("Read String", {
-      const response = firebaseDatabaseModule.getValue(pathToStringTest, "default-test1-results")
+      String response = firebaseDatabaseModule.getValue(pathToStringTest, "default-test1-results")
       if (response != testString)
         throw new BadImplementationException("expected '${testString}' but got '${response}'")
     })
@@ -58,7 +58,7 @@ class PipelineTest_FirebaseIntegration
     })
 
     addStage("Read Number", {
-      const response = firebaseDatabaseModule.getNumber(pathToStringTest, null)
+      Number response = firebaseDatabaseModule.getNumber(pathToStringTest, null)
       if (response != testInt)
         throw new BadImplementationException("expected '${testInt}' but got '${response}'")
     })
