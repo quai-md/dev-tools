@@ -30,7 +30,7 @@ class PipelineTest_FirebaseIntegration
 
   @Override
   void pipeline() {
-    firebaseDatabaseModule.install()
+//    firebaseDatabaseModule.install()
     this.testString()
     this.testNumber()
   }
@@ -38,6 +38,7 @@ class PipelineTest_FirebaseIntegration
   void testString() {
     String testString = UUID.randomUUID().toString()
     String pathToStringTest = "/testing/test-string"
+    bash("firebase list")
 
     addStage("Write String", {
       firebaseDatabaseModule.setValue(pathToStringTest, testString)
