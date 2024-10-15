@@ -42,7 +42,7 @@ class PipelineTest_FirebaseIntegration
     })
 
     addStage("Read String", {
-      String response = firebaseDatabaseModule.getValue(pathToStringTest, "default-test1-results")
+      String response = firebaseDatabaseModule.getString(pathToStringTest, "default-test1-results")
       if (response != testString)
         throw new BadImplementationException("expected '${testString}' but got '${response}'")
     })
