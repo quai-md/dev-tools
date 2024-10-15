@@ -61,8 +61,8 @@ class FirebaseDatabaseModule
       def result = bash("""
           ${installViaNVM ? prefix : ""}
 
-          echo "firebase database:get ${path} --project ${projectId} --database-url=${databaseUrl} ${instance}"
-          firebase database:get ${path} --project ${projectId} --database-url=${databaseUrl} ${instance}
+          echo "firebase database:get ${path} --project ${projectId} ${instance}"
+          firebase database:get ${path} --project ${projectId} ${instance}
       """, true).trim()
 
       if (result == "null" || result.isEmpty())
