@@ -7,12 +7,13 @@ import com.nu.art.pipeline.modules.firebase.FirebaseDatabaseModule
 import com.nu.art.pipeline.workflow.BasePipeline
 import com.nu.art.pipeline.workflow.Workflow
 import com.nu.art.pipeline.workflow.variables.Var_Creds
+import com.nu.art.pipeline.workflow.variables.Var_Env
 
 class PipelineTest_FirebaseIntegration
   extends BasePipeline<PipelineTest_FirebaseIntegration> {
 
   private FirebaseDatabaseModule firebaseDatabaseModule
-  private Var_Creds firebaseKey = new Var_Creds("file", "TEMP-test-firebase")
+  public Var_Creds Env_FirebaseServiceAccount = new Var_Creds("file", "TEMP-test-firebase", new Var_Env("GOOGLE_APPLICATION_CREDENTIALS"))
 
   PipelineTest_FirebaseIntegration() {
     super("Firebase integration", FirebaseDatabaseModule.class)
@@ -20,7 +21,7 @@ class PipelineTest_FirebaseIntegration
 
   @Override
   protected void init() {
-    this.setRequiredCredentials(firebaseKey)
+    this.setRequiredCredentials(Env_FirebaseServiceAccount)
     firebaseDatabaseModule = getModule(FirebaseDatabaseModule.class)
     firebaseDatabaseModule.setDefaultProjectId("quai-dev-ops")
     firebaseDatabaseModule.setDefaultDatabaseUrl("https://quai-dev-ops-default-rtdb.firebaseio.com")
