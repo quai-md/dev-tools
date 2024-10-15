@@ -100,7 +100,7 @@ class Workflow
       logDebug("BuildUrl: " + VarConsts.Var_BuildUrl.get())
       logDebug("Workspace: " + VarConsts.Var_Workspace.get())
 
-      this.dispatchEvent("deploy.runtime.Pipeline Started Event", OnPipelineListener.class, { listener -> listener.onPipelineStarted() } as WorkflowProcessor<OnPipelineListener>)
+      this.dispatchEvent("Pipeline Started Event", OnPipelineListener.class, { listener -> listener.onPipelineStarted() } as WorkflowProcessor<OnPipelineListener>)
     })
   }
 
@@ -116,7 +116,7 @@ class Workflow
       " / ____/ / /_/ /  __/ / / / / /  __/\n" +
       "/_/   /_/ .___/\\___/_/_/_/ /_/\\___/ \n" +
       "       /_/                          \n"
-    logVerbose(" deploy.runtime.Pipeline Starting...")
+    logVerbose(" Pipeline Starting...")
     logVerbose("")
     logVerbose(art)
   }
@@ -180,12 +180,12 @@ class Workflow
     script.stage(Stage_Completed, {
       try {
         if (!t) {
-          this.dispatchEvent("deploy.runtime.Pipeline Completed Event", OnPipelineListener.class, { listener -> listener.onPipelineSuccess() } as WorkflowProcessor<OnPipelineListener>)
+          this.dispatchEvent("Pipeline Completed Event", OnPipelineListener.class, { listener -> listener.onPipelineSuccess() } as WorkflowProcessor<OnPipelineListener>)
         } else {
           if (script.currentBuild.rawBuild.result == Result.ABORTED)
-            this.dispatchEvent("deploy.runtime.Pipeline Aborted", OnPipelineListener.class, { listener -> listener.onPipelineAborted() } as WorkflowProcessor<OnPipelineListener>)
+            this.dispatchEvent("Pipeline Aborted", OnPipelineListener.class, { listener -> listener.onPipelineAborted() } as WorkflowProcessor<OnPipelineListener>)
           else
-            this.dispatchEvent("deploy.runtime.Pipeline Error Event", OnPipelineListener.class, { listener -> listener.onPipelineFailed(t) } as WorkflowProcessor<OnPipelineListener>)
+            this.dispatchEvent("Pipeline Error Event", OnPipelineListener.class, { listener -> listener.onPipelineFailed(t) } as WorkflowProcessor<OnPipelineListener>)
         }
       } catch (e) {
         logError("Error in 'completion' stage: ${t.getMessage()}", e)
@@ -234,7 +234,7 @@ class Workflow
       #!/bin/bash
       ${command}
     """)
-    return script.sh(script: "base ${fileName}", returnStdout: readOutput)
+    return script.sh(script: "bash ${fileName}", returnStdout: readOutput)
   }
 
   @NonCPS

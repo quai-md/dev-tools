@@ -4,7 +4,7 @@
 * Copy Artifact Plugin
 * Generic Webhook Trigger Plugin
 * Hidden Parameter plugin
-* deploy.runtime.Pipeline Utility Steps
+* Pipeline Utility Steps
 * SSH Agent Plugin
 
 ## Idea Libs
