@@ -18,11 +18,11 @@ class FirebaseDatabaseModule
     bash("""
          curl -o- \"https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/install.sh\" | bash
          echo ------------------------------ source
-         . \$HOME/.nvm/nvm.sh > /dev/null 2>&1
+         . \$HOME/.nvm/nvm.sh
          echo ------------------------------ install
-         nvm install 18.15.0 > /dev/null 2>&1
+         nvm install 18.15.0
          echo ------------------------------ use
-         nvm use 18.15.0  > /dev/null 2>&1
+         nvm use 18.15.0 
          echo ------------------------------ npm install
          npm install -g firebase-tools
         """)
