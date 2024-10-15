@@ -28,7 +28,7 @@ class PipelineTest_FirebaseIntegration
 
   @Override
   void pipeline() {
-//    firebaseDatabaseModule.install()
+    firebaseDatabaseModule.install()
     this.testString()
     this.testNumber()
   }
@@ -74,7 +74,7 @@ podTemplate(yaml: '''
     spec:
       containers:
         - name: test-container
-          image: us-central1-docker.pkg.dev/quai-md-jenkins-new-test-v1/runtime/prod-deploy:latest
+          image: us-docker.pkg.dev/quai-md-jenkins-new-test-v1/jenkins-old-server/jenkins-slave:22-05-24-15h-04m
           tty: true
           resources:
             limits:
