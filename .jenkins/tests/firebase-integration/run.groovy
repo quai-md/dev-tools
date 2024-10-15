@@ -22,7 +22,7 @@ class PipelineTest_FirebaseIntegration
     this.setRequiredCredentials(Env_FirebaseServiceAccount)
     firebaseDatabaseModule = getModule(FirebaseDatabaseModule.class)
     firebaseDatabaseModule.setDefaultProjectId("quai-dev-ops")
-    firebaseDatabaseModule.setDefaultDatabaseUrl("https://quai-dev-ops-default-rtdb.firebaseio.com")
+    firebaseDatabaseModule.setDefaultDatabaseUrl("quai-dev-ops-default-rtdb")
   }
 
 

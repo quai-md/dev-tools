@@ -48,7 +48,7 @@ class FirebaseDatabaseModule
           ${installViaNVM ? prefix : ""}
   
          echo "firebase database:set ${path} --data "${value}" --project ${projectId} --force ${instance}"
-         firebase database:set ${path} --data "${value}" --project ${projectId} --force
+         firebase database:set ${path} --data "${value}" --project ${projectId} --force  ${instance}
       """)
   }
 
