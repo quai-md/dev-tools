@@ -92,7 +92,7 @@ podTemplate(yaml: '''
   ''', activeDeadlineSeconds: 7200, instanceCap: 10) {
   node(POD_LABEL) {
     container('test-container') {
-      Workflow.createWorkflow(Pipeline.class, this)
+      Workflow.createWorkflow(PipelineTest_FirebaseIntegration.class, this)
     }
   }
 }
