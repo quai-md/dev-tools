@@ -88,10 +88,6 @@ podTemplate(yaml: '''
           args:
             - "9999999"
     
-      volumes:
-        - name: function-deployer
-          secret:
-            secretName: function-deployer
       restartPolicy: Never
   ''', activeDeadlineSeconds: 7200, instanceCap: 10) {
   node(POD_LABEL) {
