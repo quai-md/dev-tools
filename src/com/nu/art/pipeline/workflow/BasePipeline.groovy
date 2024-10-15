@@ -59,6 +59,10 @@ abstract class BasePipeline<T extends BasePipeline>
     return workflow.sh(command, readOutput)
   }
 
+  String bash(String command, readOutput = false) {
+    return workflow.bash(command, readOutput)
+  }
+
   String getName() {
     return name
   }
