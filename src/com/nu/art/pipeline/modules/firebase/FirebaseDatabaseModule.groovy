@@ -40,8 +40,9 @@ class FirebaseDatabaseModule
     bash("""
          . \$HOME/.nvm/nvm.sh > /dev/null 2>&1
          nvm use 18.15.0 > /dev/null 2>&1
-          
-          firebase database:set ${path} ${value} --data ${value} --project ${projectId} --database-url=${databaseUrl}
+
+         echo "firebase database:set ${path} ${value} --data ${value} --project ${projectId} --database-url=${databaseUrl}"
+         firebase database:set ${path} ${value} --data ${value} --project ${projectId} --database-url=${databaseUrl}
       """)
   }
 
