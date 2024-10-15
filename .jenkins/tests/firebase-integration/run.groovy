@@ -74,7 +74,7 @@ podTemplate(yaml: '''
     spec:
       containers:
         - name: test-container
-          image: us-central1-docker.pkg.dev/quai-md-jenkins-new-test-v1/runtime/prod-deploy:15-10-24-09h-35m
+          image: us-central1-docker.pkg.dev/quai-md-jenkins-new-test-v1/runtime/prod-deploy:latest
           tty: true
           resources:
             limits:
