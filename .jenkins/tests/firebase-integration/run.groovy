@@ -1,5 +1,5 @@
 import com.nu.art.pipeline.exceptions.BadImplementationException
-@Library('dev-tools@prod')
+@Library('dev-tools@dev')
 
 import com.nu.art.pipeline.modules.SlackModule
 import com.nu.art.pipeline.modules.build.BuildModule
