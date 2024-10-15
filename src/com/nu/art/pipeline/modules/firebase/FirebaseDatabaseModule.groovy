@@ -15,9 +15,7 @@ class FirebaseDatabaseModule
   }
 
   void install() {
-    sh("""
-         #!/bin/bash
-
+    bash("""
          curl -o- \"https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/install.sh\" | bash
          echo ------------------------------ source
          . \$HOME/.nvm/nvm.sh > /dev/null 2>&1
@@ -39,9 +37,7 @@ class FirebaseDatabaseModule
   }
 
   private void setValue(String path, String value, String projectId = this.defaultProjectId, String databaseUrl = this.defaultDatabaseUrl) {
-    sh("""
-         #!/bin/bash
-
+    bash("""
          . \$HOME/.nvm/nvm.sh > /dev/null 2>&1
          nvm use 18.15.0 > /dev/null 2>&1
           
@@ -52,9 +48,7 @@ class FirebaseDatabaseModule
   // Get a value from RTDB as a String
   private String getValue(String path, String projectId = this.defaultProjectId, String databaseUrl = this.defaultDatabaseUrl) {
     try {
-      def result = sh("""
-        #!/bin/bash
-
+      def result = bash("""
         . \$HOME/.nvm/nvm.sh > /dev/null 2>&1
         nvm list
         nvm use 18.15.0
