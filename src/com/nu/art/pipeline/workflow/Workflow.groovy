@@ -27,250 +27,259 @@ import org.jenkinsci.plugins.workflow.support.steps.build.RunWrapper
 
 
 class Workflow
-	extends ModuleManagerBuilder {
+  extends ModuleManagerBuilder {
 
-	static <T extends BasePipeline<T>> T createWorkflow(Class<T> pipelineType, def script) {
-		workflow = new Workflow(script)
+  static <T extends BasePipeline<T>> T createWorkflow(Class<T> pipelineType, def script) {
+    workflow = new Workflow(script)
 
-		BeLogged.getInstance().registerDescriptor(new LoggerDescriptor<Config_WorkflowLogger, WorkflowLogger>(Config_WorkflowLogger.KEY, Config_WorkflowLogger.class, WorkflowLogger.class))
-		BeLogged.getInstance().setConfig(new BeConfig().setLoggersConfig(new Config_WorkflowLogger()).setRules(new BeConfig.Rule().setLoggerKeys("default")))
+    BeLogged.getInstance().registerDescriptor(new LoggerDescriptor<Config_WorkflowLogger, WorkflowLogger>(Config_WorkflowLogger.KEY, Config_WorkflowLogger.class, WorkflowLogger.class))
+    BeLogged.getInstance().setConfig(new BeConfig().setLoggersConfig(new Config_WorkflowLogger()).setRules(new BeConfig.Rule().setLoggerKeys("default")))
 
-		Cli.init()
+    Cli.init()
 
-		VarConsts.Var_JenkinsHome = Var_Env.create("JENKINS_HOME")
-		VarConsts.Var_JobName = Var_Env.create("JOB_NAME")
-		VarConsts.Var_BuildNumber = Var_Env.create("BUILD_NUMBER")
-		VarConsts.Var_User = Var_Env.create("BUILD_USER_EMAIL")
-		VarConsts.Var_BuildUrl = Var_Env.create("BUILD_URL")
-		VarConsts.Var_Workspace = Var_Env.create("WORKSPACE", { script.pwd() })
+    VarConsts.Var_JenkinsHome = Var_Env.create("JENKINS_HOME")
+    VarConsts.Var_JobName = Var_Env.create("JOB_NAME")
+    VarConsts.Var_BuildNumber = Var_Env.create("BUILD_NUMBER")
+    VarConsts.Var_User = Var_Env.create("BUILD_USER_EMAIL")
+    VarConsts.Var_BuildUrl = Var_Env.create("BUILD_URL")
+    VarConsts.Var_Workspace = Var_Env.create("WORKSPACE", { script.pwd() })
 
-		T pipeline = ReflectiveTools.newInstance(pipelineType)
-		workflow.setPipeline(pipeline)
-		workflow.addModulePacks(pipeline)
-		workflow.build()
+    T pipeline = ReflectiveTools.newInstance(pipelineType)
+    workflow.setPipeline(pipeline)
+    workflow.addModulePacks(pipeline)
+    workflow.build()
 
-		script.ansiColor('xterm') {
+    script.ansiColor('xterm') {
 
-			WorkflowModule[] allmodules = workflow.manager.getModulesAssignableFrom(WorkflowModule.class)
-			allmodules.each { it._init() }
+      WorkflowModule[] allmodules = workflow.manager.getModulesAssignableFrom(WorkflowModule.class)
+      allmodules.each { it._init() }
 
-			pipeline._postInit()
-			workflow.start()
+      pipeline._postInit()
+      workflow.start()
 
 
-			script.withCredentials(pipeline.creds.collect { param -> param.toCredential(script) }) {
-				workflow.script.wrap([$class: 'BuildUser']) {
-					pipeline.pipeline()
-					pipeline.run()
-				}
-			}
-		}
+      script.withCredentials(pipeline.creds.collect { param -> param.toCredential(script) }) {
+        workflow.script.wrap([$class: 'BuildUser']) {
+          pipeline.pipeline()
+          pipeline.run()
+        }
+      }
+    }
 
-		return pipeline
-	}
+    return pipeline
+  }
 
-	public static final String Stage_IDLE = "IDLE"
-	public static final String Stage_Started = "Started"
-	public static final String Stage_Cleanup = "Cleanup"
-	public static final String Stage_Completed = "Completed"
-	public static final String Stage_Finally = "Finally"
+  public static final String Stage_IDLE = "IDLE"
+  public static final String Stage_Started = "Started"
+  public static final String Stage_Cleanup = "Cleanup"
+  public static final String Stage_Completed = "Completed"
+  public static final String Stage_Finally = "Finally"
 
-	static Workflow workflow
-	BasePipeline pipeline
-	String currentStage = Stage_IDLE
-	private String[] orderedStaged = []
-	private LinkedHashMap<String, Closure> stages = [:]
-	CpsScript script
+  static Workflow workflow
+  BasePipeline pipeline
+  String currentStage = Stage_IDLE
+  private String[] orderedStaged = []
+  private LinkedHashMap<String, Closure> stages = [:]
+  CpsScript script
 
-	private Workflow(def script) {
-		this.script = script
-	}
+  private Workflow(def script) {
+    this.script = script
+  }
 
-	private void setPipeline(BasePipeline pipeline) {
-		this.pipeline = pipeline
-	}
+  private void setPipeline(BasePipeline pipeline) {
+    this.pipeline = pipeline
+  }
 
-	void start() {
-		addStage(Stage_Started, {
-			logDebug("Default run env var values:")
-			logDebug("JenkinsHome: " + VarConsts.Var_JenkinsHome.get())
-			logDebug("JobName: " + VarConsts.Var_JobName.get())
-			logDebug("BuildNumber: " + VarConsts.Var_BuildNumber.get())
-			logDebug("UserEmail: " + VarConsts.Var_User.get())
-			logDebug("BuildUrl: " + VarConsts.Var_BuildUrl.get())
-			logDebug("Workspace: " + VarConsts.Var_Workspace.get())
+  void start() {
+    addStage(Stage_Started, {
+      logDebug("Default run env var values:")
+      logDebug("JenkinsHome: " + VarConsts.Var_JenkinsHome.get())
+      logDebug("JobName: " + VarConsts.Var_JobName.get())
+      logDebug("BuildNumber: " + VarConsts.Var_BuildNumber.get())
+      logDebug("UserEmail: " + VarConsts.Var_User.get())
+      logDebug("BuildUrl: " + VarConsts.Var_BuildUrl.get())
+      logDebug("Workspace: " + VarConsts.Var_Workspace.get())
 
-			this.dispatchEvent("Pipeline Started Event", OnPipelineListener.class, { listener -> listener.onPipelineStarted() } as WorkflowProcessor<OnPipelineListener>)
-		})
-	}
+      this.dispatchEvent("deploy.runtime.Pipeline Started Event", OnPipelineListener.class, { listener -> listener.onPipelineStarted() } as WorkflowProcessor<OnPipelineListener>)
+    })
+  }
 
-	private void setManager(ModuleManager manager) {
-		this.manager = manager
-	}
+  private void setManager(ModuleManager manager) {
+    this.manager = manager
+  }
 
-	@NonCPS
-	protected void onApplicationStarting() {
-		String art = "\n    ____  _            ___          \n" +
-			"   / __ \\(_)___  ___  / (_)___  ___ \n" +
-			"  / /_/ / / __ \\/ _ \\/ / / __ \\/ _ \\\n" +
-			" / ____/ / /_/ /  __/ / / / / /  __/\n" +
-			"/_/   /_/ .___/\\___/_/_/_/ /_/\\___/ \n" +
-			"       /_/                          \n"
-		logVerbose(" Pipeline Starting...")
-		logVerbose("")
-		logVerbose(art)
-	}
+  @NonCPS
+  protected void onApplicationStarting() {
+    String art = "\n    ____  _            ___          \n" +
+      "   / __ \\(_)___  ___  / (_)___  ___ \n" +
+      "  / /_/ / / __ \\/ _ \\/ / / __ \\/ _ \\\n" +
+      " / ____/ / /_/ /  __/ / / / / /  __/\n" +
+      "/_/   /_/ .___/\\___/_/_/_/ /_/\\___/ \n" +
+      "       /_/                          \n"
+    logVerbose(" deploy.runtime.Pipeline Starting...")
+    logVerbose("")
+    logVerbose(art)
+  }
 
-	void addStage(String name, Closure toRun) {
-		orderedStaged = ArrayTools.appendElement(orderedStaged, name)
-		stages.put(name, { toRun() })
-	}
+  void addStage(String name, Closure toRun) {
+    orderedStaged = ArrayTools.appendElement(orderedStaged, name)
+    stages.put(name, { toRun() })
+  }
 
-	void terminate(String reason) {
-		orderedStaged = []
-		currentBuild.getRawBuild().delete()
-		currentBuild.getRawBuild().getExecutor().interrupt(Result.NOT_BUILT)
-		this.logWarning("Intentionally terminating this job: ${reason}")
-		sleep(5000)
-	}
+  void terminate(String reason) {
+    orderedStaged = []
+    currentBuild.getRawBuild().delete()
+    currentBuild.getRawBuild().getExecutor().interrupt(Result.NOT_BUILT)
+    this.logWarning("Intentionally terminating this job: ${reason}")
+    sleep(5000)
+  }
 
-	void run() {
-		Throwable t = null
+  void run() {
+    Throwable t = null
 
-		for (String stage : orderedStaged) {
-			logDebug("STAGE: ${stage}")
-			try {
-				script.stage(stage, {
-					if (t) {
+    for (String stage : orderedStaged) {
+      logDebug("STAGE: ${stage}")
+      try {
+        script.stage(stage, {
+          if (t) {
 //						script.currentBuild.result = "FAILURE"
-						throw t
-					}
+            throw t
+          }
 
-					this.currentStage = stage
-					stages[stage]()
-				})
-			} catch (e) {
-				t = e
-				Result result = script.currentBuild.rawBuild.result
-				if (Result.FAILURE == result || Result.ABORTED == result)
-					continue
+          this.currentStage = stage
+          stages[stage]()
+        })
+      } catch (e) {
+        t = e
+        Result result = script.currentBuild.rawBuild.result
+        if (Result.FAILURE == result || Result.ABORTED == result)
+          continue
 
-				if (e.getClass() == FlowInterruptedException.class)
-					script.currentBuild.rawBuild.result = Result.ABORTED
-				else
-					script.currentBuild.rawBuild.result = Result.FAILURE
+        if (e.getClass() == FlowInterruptedException.class)
+          script.currentBuild.rawBuild.result = Result.ABORTED
+        else
+          script.currentBuild.rawBuild.result = Result.FAILURE
 
-				logError("Error in stage '${stage}': ${t.getMessage()}", e)
+        logError("Error in stage '${stage}': ${t.getMessage()}", e)
 //				script.currentBuild.result = "FAILURE"
-			}
-		}
+      }
+    }
 
-		script.stage(Stage_Cleanup, {
-			try {
-				pipeline.cleanup()
-			} catch (e) {
+    script.stage(Stage_Cleanup, {
+      try {
+        pipeline.cleanup()
+      } catch (e) {
 //				script.currentBuild.result = "FAILURE"
 
-				logError("Error in 'cleanup' stage: ${t.getMessage()}", e)
-				t = e
-				throw t
-			}
-		})
+        logError("Error in 'cleanup' stage: ${t.getMessage()}", e)
+        t = e
+        throw t
+      }
+    })
 
-		script.stage(Stage_Completed, {
-			try {
-				if (!t) {
-					this.dispatchEvent("Pipeline Completed Event", OnPipelineListener.class, { listener -> listener.onPipelineSuccess() } as WorkflowProcessor<OnPipelineListener>)
-				} else {
-					if (script.currentBuild.rawBuild.result == Result.ABORTED)
-						this.dispatchEvent("Pipeline Aborted", OnPipelineListener.class, { listener -> listener.onPipelineAborted() } as WorkflowProcessor<OnPipelineListener>)
-					else
-						this.dispatchEvent("Pipeline Error Event", OnPipelineListener.class, { listener -> listener.onPipelineFailed(t) } as WorkflowProcessor<OnPipelineListener>)
-				}
-			} catch (e) {
-				logError("Error in 'completion' stage: ${t.getMessage()}", e)
-				t = e
-			}
+    script.stage(Stage_Completed, {
+      try {
+        if (!t) {
+          this.dispatchEvent("deploy.runtime.Pipeline Completed Event", OnPipelineListener.class, { listener -> listener.onPipelineSuccess() } as WorkflowProcessor<OnPipelineListener>)
+        } else {
+          if (script.currentBuild.rawBuild.result == Result.ABORTED)
+            this.dispatchEvent("deploy.runtime.Pipeline Aborted", OnPipelineListener.class, { listener -> listener.onPipelineAborted() } as WorkflowProcessor<OnPipelineListener>)
+          else
+            this.dispatchEvent("deploy.runtime.Pipeline Error Event", OnPipelineListener.class, { listener -> listener.onPipelineFailed(t) } as WorkflowProcessor<OnPipelineListener>)
+        }
+      } catch (e) {
+        logError("Error in 'completion' stage: ${t.getMessage()}", e)
+        t = e
+      }
 
-			if (t)
-				throw t
-		})
+      if (t)
+        throw t
+    })
 
-		if (t)
-			throw t
-	}
+    if (t)
+      throw t
+  }
 
-	private <T> void dispatchEvent(String message, Class<T> listenerType, WorkflowProcessor<T> processor) {
-		this.manager.dispatchModuleEvent(this, message, listenerType, processor)
-	}
+  private <T> void dispatchEvent(String message, Class<T> listenerType, WorkflowProcessor<T> processor) {
+    this.manager.dispatchModuleEvent(this, message, listenerType, processor)
+  }
 
-	@NonCPS
-	void log(String message) {
-		script.echo message
-	}
+  @NonCPS
+  void log(String message) {
+    script.echo message
+  }
 
-	@NonCPS
-	void log(GString message) {
-		script.echo message
-	}
+  @NonCPS
+  void log(GString message) {
+    script.echo message
+  }
 
-	def <R> R cd(String folder, Closure<R> todo) {
-		R toRet
-		script.dir(folder) {
-			toRet = todo.call()
-		}
+  def <R> R cd(String folder, Closure<R> todo) {
+    R toRet
+    script.dir(folder) {
+      toRet = todo.call()
+    }
 
-		//noinspection GroovyVariableNotAssigned
-		return (R) toRet
-	}
+    //noinspection GroovyVariableNotAssigned
+    return (R) toRet
+  }
 
-	String sh(String command, readOutput = false) {
-		return script.sh(script: command, returnStdout: readOutput)
-	}
+  String sh(String command, readOutput = false) {
+    return script.sh(script: command, returnStdout: readOutput)
+  }
 
-	@NonCPS
-	String getEnvironmentVariable(String varName) {
-		return script.env[varName]
-	}
+  String bash(String command, readOutput = false) {
+    String fileName = "./temp-${UUID.randomUUID()}.sh"
+    writeToFile(fileName, """
+      #!/bin/bash
+      ${command}
+    """)
+    return script.sh(script: "base ${fileName}", returnStdout: readOutput)
+  }
 
-	@NonCPS
-	String setEnvironmentVariable(String varName, String value) {
-		this.logDebug("Setting Env Variable: ${varName}=${value}")
-		return script.env[varName] = value
-	}
+  @NonCPS
+  String getEnvironmentVariable(String varName) {
+    return script.env[varName]
+  }
 
-	void withCredentials(Var_Creds[] params, Closure toRun) {
-		script.withCredentials(params.collect { param -> param.toCredential(script) }) {
-			toRun()
-		}
-	}
+  @NonCPS
+  String setEnvironmentVariable(String varName, String value) {
+    this.logDebug("Setting Env Variable: ${varName}=${value}")
+    return script.env[varName] = value
+  }
 
-	RunWrapper getCurrentBuild() {
-		return script.currentBuild
-	}
+  void withCredentials(Var_Creds[] params, Closure toRun) {
+    script.withCredentials(params.collect { param -> param.toCredential(script) }) {
+      toRun()
+    }
+  }
 
-	boolean fileExists(String pathToFile) {
-		return script.fileExists(pathToFile)
-	}
+  RunWrapper getCurrentBuild() {
+    return script.currentBuild
+  }
 
-	String readFile(String pathToFile) {
-		if (!fileExists(pathToFile))
-			throw new BadImplementationException("Could not find file: ${pathToFile}")
+  boolean fileExists(String pathToFile) {
+    return script.fileExists(pathToFile)
+  }
 
-		return script.readFile(pathToFile)
-	}
+  String readFile(String pathToFile) {
+    if (!fileExists(pathToFile))
+      throw new BadImplementationException("Could not find file: ${pathToFile}")
 
-	void writeToFile(String pathToFile, String content) {
-		script.writeFile file: pathToFile, text: content
-	}
+    return script.readFile(pathToFile)
+  }
 
-	void archiveArtifacts(String pattern, boolean onlyIfSuccessful = true) {
-		script.archiveArtifacts artifacts: pattern, onlyIfSuccessful: onlyIfSuccessful
-	}
+  void writeToFile(String pathToFile, String content) {
+    script.writeFile file: pathToFile, text: content
+  }
 
-	void deleteWorkspace() {
-		script.deleteDir()
-	}
+  void archiveArtifacts(String pattern, boolean onlyIfSuccessful = true) {
+    script.archiveArtifacts artifacts: pattern, onlyIfSuccessful: onlyIfSuccessful
+  }
+
+  void deleteWorkspace() {
+    script.deleteDir()
+  }
 }
 
 
