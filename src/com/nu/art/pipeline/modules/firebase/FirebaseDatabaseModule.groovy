@@ -6,16 +6,22 @@ import groovy.json.JsonSlurper
 
 class FirebaseDatabaseModule
   extends WorkflowModule {
+  private String prefix = """
+         . \$HOME/.nvm/nvm.sh
+         nvm use 18.15.0
+      """
 
   String defaultProjectId
   String defaultDatabaseUrl
+  boolean installViaNVM = false
 
   @Override
   void _init() {
   }
 
   void install() {
-    bash("""
+    if (installViaNVM)
+      bash("""
          curl -o- \"https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/install.sh\" | bash
          echo ------------------------------ source
          . \$HOME/.nvm/nvm.sh
@@ -39,9 +45,8 @@ class FirebaseDatabaseModule
   private void setValue(String path, String value, String projectId = this.defaultProjectId, String databaseUrl = this.defaultDatabaseUrl) {
     String instance = databaseUrl ? " --instance=${databaseUrl}" : ""
     bash("""
-         . \$HOME/.nvm/nvm.sh > /dev/null 2>&1
-         nvm use 18.15.0 > /dev/null 2>&1
-
+          ${installViaNVM ? prefix : ""}
+  
          echo "firebase database:set ${path} --data "${value}" --project ${projectId} --force ${instance}"
          firebase database:set ${path} --data "${value}" --project ${projectId} --force
       """)
@@ -50,13 +55,15 @@ class FirebaseDatabaseModule
   // Get a value from RTDB as a String
   private String getValue(String path, String projectId = this.defaultProjectId, String databaseUrl = this.defaultDatabaseUrl) {
     try {
+      String instance = databaseUrl ? " --instance=${databaseUrl}" : ""
+
       def result = bash("""
-        . \$HOME/.nvm/nvm.sh > /dev/null 2>&1
-        nvm list
-        nvm use 18.15.0
-        echo "firebase database:get ${path} --project ${projectId} --database-url=${databaseUrl}"
-        firebase database:get ${path} --project ${projectId} --database-url=${databaseUrl}
+          ${installViaNVM ? prefix : ""}
+
+          echo "firebase database:get ${path} --project ${projectId} --database-url=${databaseUrl} ${instance}"
+          firebase database:get ${path} --project ${projectId} --database-url=${databaseUrl} ${instance}
       """, true).trim()
+
       if (result == "null" || result.isEmpty())
         return null
 

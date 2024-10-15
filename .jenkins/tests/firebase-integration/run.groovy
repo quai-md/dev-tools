@@ -28,10 +28,6 @@ class PipelineTest_FirebaseIntegration
 
   @Override
   void pipeline() {
-    bash("""
-        nvm use 18.15.0
-        firebase list
-      """)
     firebaseDatabaseModule.install()
     this.testString()
     this.testNumber()
