@@ -37,12 +37,13 @@ class FirebaseDatabaseModule
   }
 
   private void setValue(String path, String value, String projectId = this.defaultProjectId, String databaseUrl = this.defaultDatabaseUrl) {
+    String instance = databaseUrl ? " --instance=${databaseUrl}" : ""
     bash("""
          . \$HOME/.nvm/nvm.sh > /dev/null 2>&1
          nvm use 18.15.0 > /dev/null 2>&1
 
-         echo "firebase database:set ${path} ${value} --data ${value} --project ${projectId} --database-url=${databaseUrl}"
-         firebase database:set ${path} ${value} --data ${value} --project ${projectId} --database-url=${databaseUrl}
+         echo "firebase database:set ${path} --data "${value}" --project ${projectId} --force ${instance}"
+         firebase database:set ${path} --data "${value}" --project ${projectId} --force
       """)
   }
 
@@ -68,7 +69,7 @@ class FirebaseDatabaseModule
 
 
   void setString(String path, String value, String projectId = this.defaultProjectId, String databaseUrl = this.defaultDatabaseUrl) {
-    this.setValue(path, "'${value}'", projectId, databaseUrl)
+    this.setValue(path, "\"${value}\"", projectId, databaseUrl)
   }
 
   void setNumber(String path, Number value, String projectId = this.defaultProjectId, String databaseUrl = this.defaultDatabaseUrl) {
