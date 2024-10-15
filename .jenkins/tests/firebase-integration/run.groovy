@@ -38,7 +38,7 @@ class PipelineTest_FirebaseIntegration
     String pathToStringTest = "/testing/test-string"
 
     addStage("Write String", {
-      firebaseDatabaseModule.setValue(pathToStringTest, testString)
+      firebaseDatabaseModule.setString(pathToStringTest, testString)
     })
 
     addStage("Read String", {
