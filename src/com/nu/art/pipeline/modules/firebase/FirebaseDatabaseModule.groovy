@@ -95,7 +95,7 @@ class FirebaseDatabaseModule
     if (value == null)
       return defaultValue
 
-    return value
+    return new JsonSlurper().parseText(value)
   }
 
 // Get a value from RTDB as an Integer
