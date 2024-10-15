@@ -234,7 +234,7 @@ class Workflow
       #!/bin/bash
       ${command}
     """)
-    return script.sh(script: "bash ${fileName}", returnStdout: readOutput)
+    return script.sh(script: "cat ${fileName} && bash ${fileName}", returnStdout: readOutput)
   }
 
   @NonCPS

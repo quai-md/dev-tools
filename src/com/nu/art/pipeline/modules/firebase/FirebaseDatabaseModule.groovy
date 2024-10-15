@@ -48,7 +48,7 @@ class FirebaseDatabaseModule
     def command = "firebase database:set ${path} --data '${value}' --project ${projectId} --force ${instance}"
     this.logWarning("'${command}'")
     bash("""
-          ${installViaNVM ? prefix : ""}
+         ${installViaNVM ? prefix : ""}
          ${command}
       """)
   }
