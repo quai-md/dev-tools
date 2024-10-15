@@ -29,9 +29,9 @@ class PipelineTest_FirebaseIntegration
   @Override
   void pipeline() {
     firebaseDatabaseModule.install()
+    this.testObject()
     this.testString()
     this.testNumber()
-    this.testObject()
   }
 
   void testString() {

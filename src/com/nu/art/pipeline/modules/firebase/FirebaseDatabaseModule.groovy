@@ -85,7 +85,7 @@ class FirebaseDatabaseModule
 // Set a value in RTDB
   def <T> void setObj(String path, T value, String projectId = this.defaultProjectId, String databaseUrl = this.defaultDatabaseUrl) {
     String valueJson = JsonOutput.toJson(value)
-    this.setValue(path, "'${valueJson}'", projectId, databaseUrl)
+    this.setValue(path, "${valueJson}", projectId, databaseUrl)
   }
 
 
