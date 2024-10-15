@@ -36,7 +36,7 @@ class PipelineTest_FirebaseIntegration
   void testString() {
     String testString = UUID.randomUUID().toString()
     String pathToStringTest = "/testing/test-string"
-    sh("firebase list")
+    bash("firebase list")
 
     addStage("Write String", {
       firebaseDatabaseModule.setValue(pathToStringTest, testString)
