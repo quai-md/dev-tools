@@ -1,8 +1,6 @@
 import com.nu.art.pipeline.exceptions.BadImplementationException
 @Library('dev-tools@dev')
 
-import com.nu.art.pipeline.modules.SlackModule
-import com.nu.art.pipeline.modules.build.BuildModule
 import com.nu.art.pipeline.modules.firebase.FirebaseDatabaseModule
 import com.nu.art.pipeline.workflow.BasePipeline
 import com.nu.art.pipeline.workflow.Workflow
@@ -38,7 +36,7 @@ class PipelineTest_FirebaseIntegration
   void testString() {
     String testString = UUID.randomUUID().toString()
     String pathToStringTest = "/testing/test-string"
-    bash("firebase list")
+    sh("firebase list")
 
     addStage("Write String", {
       firebaseDatabaseModule.setValue(pathToStringTest, testString)
@@ -67,6 +65,38 @@ class PipelineTest_FirebaseIntegration
   }
 }
 
-node() {
-  Workflow.createWorkflow(PipelineTest_FirebaseIntegration.class, this)
+podTemplate(yaml: '''
+    apiVersion: v1
+    kind: Pod
+    metadata:
+      annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "false"
+    spec:
+      containers:
+        - name: test-container
+          image: us-central1-docker.pkg.dev/quai-md-jenkins-new-test-v1/runtime/prod-deploy
+          tty: true
+          resources:
+            limits:
+              cpu: "1"
+              memory: "2Gi"
+            requests:
+              cpu: "1"
+              memory: "2Gi"
+          command:
+            - sleep
+          args:
+            - "9999999"
+    
+      volumes:
+        - name: function-deployer
+          secret:
+            secretName: function-deployer
+      restartPolicy: Never
+  ''', activeDeadlineSeconds: 7200, instanceCap: 10) {
+  node(POD_LABEL) {
+    container('test-container') {
+      Workflow.createWorkflow(Pipeline.class, this)
+    }
+  }
 }
