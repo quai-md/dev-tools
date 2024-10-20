@@ -283,7 +283,7 @@ class Workflow
             return script.activeChoice(
               name: var.varName,
               description: var.param.description ?: '',
-              choiceType: 'SINGLE_SELECT',
+              choiceType: 'PT_SINGLE_SELECT',
               script: [
                 $class: 'org.biouno.unochoice.model.GroovyScript',
                 script: [
