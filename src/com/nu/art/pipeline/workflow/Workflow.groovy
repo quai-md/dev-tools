@@ -280,14 +280,17 @@ class Workflow
           case 'file':
             return script.file(name: var.varName, description: var.param.description ?: '')
           case 'active-param':
-            return script.activeChoice(
+            return script.activeChoiceParam(
               name: var.varName, description:
               var.param.description ?: '',
               choiceType: 'SINGLE_SELECT',
               script: [
-                classpath: [],
-                sandbox  : true,
-                script   : var.param.script
+                $class: 'org.biouno.unochoice.model.GroovyScript', // Specify the script class for active choice
+                script: [
+                  classpath: [],
+                  sandbox  : true,
+                  script   : var.param.script
+                ]
               ]
             )
           default:
