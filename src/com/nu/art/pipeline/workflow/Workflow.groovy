@@ -266,11 +266,23 @@ class Workflow
 
     script.properties([
       script.parameters(jobParams.collect { var ->
-        if (var.param.type == 'string') {
-          return script.string(name: var.varName, defaultValue: var.param.defaultValue ?: '', description: var.param.description ?: '')
-        } else if (var.param.type == 'boolean') {
-          return script.booleanParam(name: var.varName, defaultValue: Boolean.parseBoolean(var.param.defaultValue ?: 'false'), description: var.param.description ?: '')
+        switch (var.type) {
+          case 'string':
+            return script.string(name: var.varName, defaultValue: var.param.defaultValue ?: '', description: var.param.description ?: '')
+          case 'boolean':
+            return script.booleanParam(name: var.varName, defaultValue: Boolean.parseBoolean(var.param.defaultValue ?: 'false'), description: var.param.description ?: '')
+          case 'choice':
+            return script.choice(name: var.varName, choices: var.param.defaultValue.split(','), description: var.param.description ?: '')
+          case 'password':
+            return script.password(name: var.varName, defaultValue: '', description: var.param.description ?: '')
+          case 'text':
+            return script.text(name: var.varName, defaultValue: var.param.defaultValue ?: '', description: var.param.description ?: '')
+          case 'file':
+            return script.file(name: var.varName, description: var.param.description ?: '')
+          default:
+            throw new IllegalArgumentException("Unsupported parameter type: ${var.param.type}")
         }
+
         // Add other types as needed
       })
     ])
