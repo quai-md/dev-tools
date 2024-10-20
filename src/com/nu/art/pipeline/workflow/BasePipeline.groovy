@@ -33,8 +33,14 @@ abstract class BasePipeline<T extends BasePipeline>
     return (T) this
   }
 
+
   T setRequiredSSHCredentials(String... sshCreds) {
     this.sshCreds = sshCreds
+    return (T) this
+  }
+
+  T setJobParams(Var_Env... jobParams) {
+    this.workflow.setJobParams(jobParams)
     return (T) this
   }
 

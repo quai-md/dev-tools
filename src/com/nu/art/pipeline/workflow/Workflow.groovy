@@ -262,6 +262,20 @@ class Workflow
     return script.env[varName] = value
   }
 
+  void setJobParams(Var_Env... jobParams) {
+
+    script.properties([
+      script.parameters(jobParams.collect { var ->
+        if (var.type == 'string') {
+          return script.string(name: var.varName, defaultValue: var.defaultValue ?: '', description: var.description ?: '')
+        } else if (var.type == 'boolean') {
+          return script.booleanParam(name: var.varName, defaultValue: Boolean.parseBoolean(var.defaultValue ?: 'false'), description: var.description ?: '')
+        }
+        // Add other types as needed
+      })
+    ])
+  }
+
   void withCredentials(Var_Creds[] params, Closure toRun) {
     script.withCredentials(params.collect { param -> param.toCredential(script) }) {
       toRun()
