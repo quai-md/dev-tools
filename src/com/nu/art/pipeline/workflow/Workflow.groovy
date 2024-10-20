@@ -279,6 +279,17 @@ class Workflow
             return script.text(name: var.varName, defaultValue: var.param.defaultValue ?: '', description: var.param.description ?: '')
           case 'file':
             return script.file(name: var.varName, description: var.param.description ?: '')
+          case 'active-param':
+            return script.activeChoiceParam(
+              name: var.varName, description:
+              var.param.description ?: '',
+              choiceType: 'SINGLE_SELECT',
+              script: [
+                classpath: [],
+                sandbox  : true,
+                script   : var.param.script
+              ]
+            )
           default:
             throw new IllegalArgumentException("Unsupported parameter type: ${var.param.type}")
         }
