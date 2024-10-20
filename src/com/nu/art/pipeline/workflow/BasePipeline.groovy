@@ -43,6 +43,11 @@ abstract class BasePipeline<T extends BasePipeline>
     return (T) this
   }
 
+  T runStage(String name, Closure toRun) {
+    workflow.runStage(name, toRun)
+    return (T) this
+  }
+
   void cd(String folder, Closure todo) {
     workflow.cd(folder, todo)
   }
@@ -65,6 +70,10 @@ abstract class BasePipeline<T extends BasePipeline>
 
   String getName() {
     return name
+  }
+
+  void runInParallel(String stageName, Stage... stages) {
+    workflow.runInParallel(stageName, stages)
   }
 
   void run() {

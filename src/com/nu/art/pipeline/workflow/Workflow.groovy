@@ -126,6 +126,20 @@ class Workflow
     stages.put(name, { toRun() })
   }
 
+  void runStage(String name, Closure toRun) {
+    script.stage(name, toRun)
+  }
+
+  void runInParallel(String stageName, Stage... stages) {
+    addStage(stageName, {
+      workflow.script.parallel(stages.collectEntries { stage ->
+        [(stage.name): {
+          runStage(stage.name, stage.toRun)
+        }]
+      })
+    })
+  }
+
   void terminate(String reason) {
     orderedStaged = []
     currentBuild.getRawBuild().delete()
