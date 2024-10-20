@@ -272,7 +272,7 @@ class Workflow
           case 'boolean':
             return script.booleanParam(name: var.varName, defaultValue: Boolean.parseBoolean(var.param.defaultValue ?: 'false'), description: var.param.description ?: '')
           case 'choice':
-            return script.choice(name: var.varName, choices: var.param.defaultValue.split(','), description: var.param.description ?: '')
+            return script.choice(name: var.varName, choices: var.param.defaultValue.split(',') as List, description: var.param.description ?: '')
           case 'password':
             return script.password(name: var.varName, defaultValue: '', description: var.param.description ?: '')
           case 'text':
