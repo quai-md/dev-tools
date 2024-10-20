@@ -280,7 +280,7 @@ class Workflow
           case 'file':
             return script.file(name: var.varName, description: var.param.description ?: '')
           case 'active-param':
-            return script.dynamicChoice(
+            return script.activeChoice(
               name: var.varName,
               description: var.param.description ?: '',
               choiceType: 'SINGLE_SELECT',
