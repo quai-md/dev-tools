@@ -266,7 +266,7 @@ class Workflow
 
     script.properties([
       script.parameters(jobParams.collect { var ->
-        switch (var.type) {
+        switch (var.param.type) {
           case 'string':
             return script.string(name: var.varName, defaultValue: var.param.defaultValue ?: '', description: var.param.description ?: '')
           case 'boolean':
