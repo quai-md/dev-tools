@@ -268,7 +268,7 @@ class Workflow
       script.parameters(jobParams.collect { var ->
         if (var.param.type == 'string') {
           return script.string(name: var.varName, defaultValue: var.param.defaultValue ?: '', description: var.param.description ?: '')
-        } else if (var.type == 'boolean') {
+        } else if (var.param.type == 'boolean') {
           return script.booleanParam(name: var.varName, defaultValue: Boolean.parseBoolean(var.param.defaultValue ?: 'false'), description: var.param.description ?: '')
         }
         // Add other types as needed
