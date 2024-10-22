@@ -24,6 +24,8 @@ class Pipeline
       choiceParam,
       activeParam,
     )
+    def currentJobParams = workflow.currentBuild.rawBuild.parent.getProperty("hudson.model.ParametersDefinitionProperty")?.parameterDefinitions ?: []
+    this.logWarning(currentJobParams.length)
   }
 
 
