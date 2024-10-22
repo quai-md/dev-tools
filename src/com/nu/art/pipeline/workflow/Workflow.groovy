@@ -263,7 +263,6 @@ class Workflow
   }
 
   void setJobParams(Var_Env... jobParams) {
-
     script.properties([
       script.parameters(jobParams.collect { var ->
         switch (var.param.type) {
@@ -296,8 +295,6 @@ class Workflow
           default:
             throw new IllegalArgumentException("Unsupported parameter type: ${var.param.type}")
         }
-
-        // Add other types as needed
       })
     ])
   }
