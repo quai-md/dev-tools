@@ -44,6 +44,7 @@ class Pipeline
     def currentJobParams = definitions ?: []
     this.logWarning("params length: ${currentJobParams.size()}")
     this.logWarning("params length: ${currentJobParams.get(0).getClass().getName()}")
+    this.logWarning("params length: ${currentJobParams.collect jobParam -> { "${jobParam.getName()}(${jobParam.getType()})\ndesc: ${jobParam.getDescription()}\n " }}")
 
     this.logWarning("params length: ${workflow.script.params}")
     this.logWarning("params length: ${workflow.script.params.getClass().getName()}")
