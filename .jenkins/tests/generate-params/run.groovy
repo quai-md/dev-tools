@@ -42,7 +42,7 @@ class Pipeline
     this.logWarning("definitions: ${definitions.class.getName()}")
 
     def currentJobParams = definitions ?: []
-    this.logWarning(currentJobParams.size())
+    this.logWarning("params length: ${currentJobParams.size()}")
   }
 
 
