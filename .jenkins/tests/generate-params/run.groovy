@@ -1,4 +1,4 @@
-@Library('dev-tools@prod')
+@Library('dev-tools@vdk/dev')
 
 import com.nu.art.pipeline.workflow.variables.*
 import com.nu.art.pipeline.workflow.BasePipeline
