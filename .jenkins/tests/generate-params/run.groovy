@@ -57,7 +57,7 @@ class Pipeline
   void pipeline() {
   }
 
-  static void printClassSignature(Object instance) {
+  void printClassSignature(Object instance) {
     if (instance == null) {
       println("The instance is null, cannot determine class.")
       return
