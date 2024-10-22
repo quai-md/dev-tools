@@ -24,7 +24,24 @@ class Pipeline
       choiceParam,
       activeParam,
     )
-    def currentJobParams = workflow.currentBuild.rawBuild.parent.getProperty("hudson.model.ParametersDefinitionProperty")?.parameterDefinitions ?: []
+
+    this.logWarning("start")
+    def build = workflow.getCurrentBuild()
+    this.logWarning("build: ${build.class.getName()}")
+
+    def rawBuild = build.rawBuild
+    this.logWarning("rawBuild: ${rawBuild.class.getName()}")
+
+    def parentBuild = rawBuild.parent
+    this.logWarning("parentBuild: ${parentBuild.class.getName()}")
+
+    def property = parentBuild.getProperty(hudson.model.ParametersDefinitionProperty.class)
+    this.logWarning("property: ${property.class.getName()}")
+
+    def definitions = property?.parameterDefinitions
+    this.logWarning("definitions: ${definitions.class.getName()}")
+
+    def currentJobParams = definitions ?: []
     this.logWarning(currentJobParams.length)
   }
 
