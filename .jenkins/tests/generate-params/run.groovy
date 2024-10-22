@@ -65,37 +65,37 @@ class Pipeline
 
     // Get the class of the instance
     Class<?> clazz = instance.getClass()
-    println "Class: ${clazz.name}"
+    this.logError("Class: ${clazz.name}")
 
     // Print class modifiers (public, abstract, etc.)
-    println "${Modifier.toString(clazz.modifiers)} class ${clazz.simpleName} {"
+    this.logError("${Modifier.toString(clazz.modifiers)} class ${clazz.simpleName} {")
 
     // Print fields (including their types)
-    println "\n  // Fields"
+    this.logError("\n  // Fields")
     clazz.declaredFields.each { field ->
       def modifiers = Modifier.toString(field.modifiers)
-      println "  ${modifiers} ${field.type.simpleName} ${field.name};"
+      this.logError("  ${modifiers} ${field.type.simpleName} ${field.name};")
     }
 
     // Print constructors (including parameter types)
-    println "\n  // Constructors"
+    this.logError("\n  // Constructors")
     clazz.declaredConstructors.each { constructor ->
       def modifiers = Modifier.toString(constructor.modifiers)
       def paramTypes = constructor.parameterTypes.collect { it.simpleName }.join(', ')
-      println "  ${modifiers} ${clazz.simpleName}(${paramTypes});"
+      this.logError("  ${modifiers} ${clazz.simpleName}(${paramTypes});")
     }
 
     // Print methods (including return types and parameters)
-    println "\n  // Methods"
+    this.logError("\n  // Methods")
     clazz.declaredMethods.each { method ->
       def modifiers = Modifier.toString(method.modifiers)
       def returnType = method.returnType.simpleName
       def paramTypes = method.parameterTypes.collect { it.simpleName }.join(', ')
-      println "  ${modifiers} ${returnType} ${method.name}(${paramTypes});"
+      this.logError("  ${modifiers} ${returnType} ${method.name}(${paramTypes});")
     }
 
     // Close the class signature
-    println "}"
+    this.logError("}")
   }
 
 }
