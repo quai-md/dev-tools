@@ -287,7 +287,7 @@ class Workflow
                 $class: 'org.biouno.unochoice.model.GroovyScript',
                 script: [
                   classpath: [],
-                  sandbox  : false,
+                  sandbox  : true,
                   script   : var.param.script
                 ]
               ]
@@ -295,6 +295,8 @@ class Workflow
           default:
             throw new IllegalArgumentException("Unsupported parameter type: ${var.param.type}")
         }
+
+        // Add other types as needed
       })
     ])
   }
