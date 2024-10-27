@@ -39,12 +39,12 @@ class Var_Env
     this.param = param
   }
 
-  String get() {
+  String get(String fallbackValue) {
     def value = this.value.get()
     if (this.fallbackParam && (value == null || value == ""))
       return this.fallbackParam.get()
 
-    return value
+    return value ?: fallbackValue
   }
 
   String set(String newValue) {
