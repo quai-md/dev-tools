@@ -1,5 +1,6 @@
 package com.nu.art.pipeline.workflow.variables
 
+import com.nu.art.pipeline.exceptions.BadImplementationException
 import com.nu.art.pipeline.interfaces.Getter
 import com.nu.art.pipeline.workflow.Workflow
 
@@ -9,6 +10,7 @@ class Var_Env
   final String varName
   final Getter<String> value
   final JobParam param
+  private Var_Env fallbackParam
 
   static Var_Env create(String varName) {
     return new Var_Env(varName)
@@ -38,12 +40,23 @@ class Var_Env
   }
 
   String get() {
-    return value.get()
+    def value = this.value.get()
+    if (this.fallbackParam && (value == null || value == ""))
+      return this.fallbackParam.get()
+
+    return value
   }
 
   String set(String newValue) {
     String oldValue = this.value.get()
     Workflow.workflow.setEnvironmentVariable(this.varName, newValue)
     return oldValue
+  }
+
+  Var_Env setFallback(Var_Env fallbackParam) {
+    if (this == fallbackParam || fallbackParam.fallbackParam == this)
+      throw new BadImplementationException("setting same param instance as fallback")
+
+    this.fallbackParam = fallbackParam
   }
 }
