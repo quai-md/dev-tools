@@ -1,6 +1,7 @@
 package com.nu.art.pipeline.workflow.variables
 
 import com.nu.art.pipeline.exceptions.BadImplementationException
+import com.nu.art.pipeline.exceptions.MUSTNeverHappenException
 import com.nu.art.pipeline.interfaces.Getter
 import com.nu.art.pipeline.workflow.Workflow
 
@@ -39,6 +40,10 @@ class Var_Env
     this.param = param
   }
 
+  String get() {
+    return this.get(null)
+  }
+
   String get(String fallbackValue) {
     def value = this.value.get()
     if (this.fallbackParam && (value == null || value == ""))
@@ -64,7 +69,7 @@ class Var_Env
     def varValue = value.get()
 
     if (varValue == null || varValue.isEmpty())
-      throw new Exception("${varName} is required but not provided.")
+      throw new MUSTNeverHappenException("${varName} is required but not provided.")
 
     return varValue
   }
