@@ -1,20 +1,22 @@
 package com.nu.art.pipeline.workflow.variables
 
+class Script {
+  String script
+  Boolean sandbox = true
+
+  Script(String script, Boolean sandbox = true) {
+    this.sandbox = sandbox
+    this.script = script
+  }
+}
+
 class JobParam {
   String type
   String description
   String defaultValue
-  String script
+  Script script
 
-  JobParam(String type) {
-    this(type, "", "")
-  }
-
-  JobParam(String type, String description, String defaultValue) {
-    this(type, description, defaultValue, "")
-  }
-
-  JobParam(String type, String description, String defaultValue, String script) {
+  JobParam(String type, String description = "", String defaultValue = null, Script script = new Script("")) {
     this.type = type
     this.description = description
     this.defaultValue = defaultValue

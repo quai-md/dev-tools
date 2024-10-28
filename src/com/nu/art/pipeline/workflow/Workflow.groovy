@@ -287,8 +287,8 @@ class Workflow
                 $class: 'org.biouno.unochoice.model.GroovyScript',
                 script: [
                   classpath: [],
-                  sandbox  : true,
-                  script   : var.param.script
+                  sandbox  : var.param.script.sandbox,
+                  script   : var.param.script.script
                 ]
               ]
             )
