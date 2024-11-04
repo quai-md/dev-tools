@@ -12,7 +12,6 @@ class FirebaseDatabaseModule
       """
 
   String defaultProjectId
-  String defaultDatabaseUrl
   boolean installViaNVM = false
 
   @Override
@@ -34,15 +33,11 @@ class FirebaseDatabaseModule
         """)
   }
 
-  void setDefaultDatabaseUrl(String defaultDatabaseUrl) {
-    this.defaultDatabaseUrl = defaultDatabaseUrl
-  }
-
   void setDefaultProjectId(String defaultProjectId) {
     this.defaultProjectId = defaultProjectId
   }
 
-  private void setValue(String path, String value, String projectId = this.defaultProjectId, String databaseUrl = this.defaultDatabaseUrl) {
+  private void setValue(String path, String value, String projectId = this.defaultProjectId, String databaseUrl = "${projectId}-default-rtdb") {
     String instance = databaseUrl ? " --instance=${databaseUrl}" : ""
 
     def command = "firebase database:set ${path} --data '${value}' --project ${projectId} --force ${instance}"
@@ -54,7 +49,7 @@ class FirebaseDatabaseModule
   }
 
   // Get a value from RTDB as a String
-  private String getValue(String path, String projectId = this.defaultProjectId, String databaseUrl = this.defaultDatabaseUrl) {
+  private String getValue(String path, String projectId = this.defaultProjectId, String databaseUrl = "${projectId}-default-rtdb") {
     try {
       String instance = databaseUrl ? " --instance=${databaseUrl}" : ""
       def command = "firebase database:get ${path} --project ${projectId} ${instance}"
@@ -76,23 +71,23 @@ class FirebaseDatabaseModule
   }
 
 
-  void setString(String path, String value, String projectId = this.defaultProjectId, String databaseUrl = this.defaultDatabaseUrl) {
+  void setString(String path, String value, String projectId = this.defaultProjectId, String databaseUrl = "${projectId}-default-rtdb") {
     this.setValue(path, "\"${value}\"", projectId, databaseUrl)
   }
 
-  void setNumber(String path, Number value, String projectId = this.defaultProjectId, String databaseUrl = this.defaultDatabaseUrl) {
+  void setNumber(String path, Number value, String projectId = this.defaultProjectId, String databaseUrl = "${projectId}-default-rtdb") {
     this.setValue(path, "${value}", projectId, databaseUrl)
   }
 
 // Set a value in RTDB
-  def <T> void setObj(String path, T value, String projectId = this.defaultProjectId, String databaseUrl = this.defaultDatabaseUrl) {
+  def <T> void setObj(String path, T value, String projectId = this.defaultProjectId, String databaseUrl = "${projectId}-default-rtdb") {
     String valueJson = JsonOutput.toJson(value)
     this.setValue(path, "${valueJson}", projectId, databaseUrl)
   }
 
 
 // Get a value from RTDB as a String
-  String getString(String path, String defaultValue, String projectId = this.defaultProjectId, String databaseUrl = this.defaultDatabaseUrl) {
+  String getString(String path, String defaultValue, String projectId = this.defaultProjectId, String databaseUrl = "${projectId}-default-rtdb") {
     String value = this.getValue(path, projectId, databaseUrl)
     if (value == null)
       return defaultValue
@@ -101,7 +96,7 @@ class FirebaseDatabaseModule
   }
 
 // Get a value from RTDB as an Integer
-  Number getNumber(String path, Integer defaultValue, String projectId = this.defaultProjectId, String databaseUrl = this.defaultDatabaseUrl) {
+  Number getNumber(String path, Integer defaultValue, String projectId = this.defaultProjectId, String databaseUrl = "${projectId}-default-rtdb") {
     String output = this.getValue(path, projectId, databaseUrl)
     if (output == null)
       return defaultValue
@@ -110,7 +105,7 @@ class FirebaseDatabaseModule
   }
 
 // Generic method to get a value from RTDB
-  def <T> T getObj(String path, T defaultValue, String projectId = this.defaultProjectId, String databaseUrl = this.defaultDatabaseUrl) {
+  def <T> T getObj(String path, T defaultValue, String projectId = this.defaultProjectId, String databaseUrl = "${projectId}-default-rtdb") {
     String output = this.getValue(path, projectId, databaseUrl)
     if (output == null)
       return defaultValue
