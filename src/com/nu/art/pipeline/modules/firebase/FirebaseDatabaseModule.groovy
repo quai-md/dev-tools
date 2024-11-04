@@ -49,7 +49,7 @@ class FirebaseDatabaseModule
            ${command}
         """)
     } catch (Throwable t) {
-      this.logWarning("Failed to fetch value from RTDB: ", t)
+      this.logWarning("Failed to write value to RTDB: ", t)
       throw t
     }
   }
