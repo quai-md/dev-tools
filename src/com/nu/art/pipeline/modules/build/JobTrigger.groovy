@@ -21,16 +21,17 @@ class JobTrigger
     return this.addParam(JobParam.Param_String, key.toString(), value)
   }
 
-  JobTrigger addString(Var_Env envVar) {
-    this.addString(envVar, null)
-  }
-
-  JobTrigger addString(Var_Env envVar, String fallbackValue) {
+  JobTrigger addString(Var_Env envVar, String fallbackValue = null) {
     return this.addParam(JobParam.Param_String, envVar.varName, envVar.get() ?: fallbackValue)
   }
 
-  JobTrigger addBoolean(String key, Boolean value) {
+  JobTrigger addBoolean(String key, boolean value = false) {
     return this.addParam(JobParam.Param_Boolean, key.toString(), value)
+  }
+
+  JobTrigger addBoolean(Var_Env envVar, boolean fallbackValue = false) {
+    def value = envVar.get()
+    return this.addParam(JobParam.Param_Boolean, envVar.varName, value ? value.toBoolean() : fallbackValue)
   }
 
   JobTrigger setWait(boolean wait) {
