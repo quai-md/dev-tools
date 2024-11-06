@@ -40,7 +40,7 @@ class JobTrigger
   }
 
   private <T> JobTrigger addParam(JobParam<T> type, String key, T value) {
-    params += [$class: type.key, name: key, value: value.toString()]
+    params += [$class: type.key, name: key, value: value]
     return this
   }
 
