@@ -27,6 +27,10 @@ abstract class WorkflowModule
 		return workflow.sh(command, readOutput)
 	}
 
+	String bash(String command, readOutput = false) {
+		return workflow.bash(command, readOutput)
+	}
+
 	String sh(GString command, readOutput = false) {
 		return workflow.sh(command.toString(), readOutput)
 	}

@@ -83,8 +83,9 @@ class GitRepo {
 		sh(cli().merge(commitTag))
 	}
 
-	void createTag(String tagName) {
+	GitRepo createTag(String tagName) {
 		sh(cli().createTag(tagName))
+		return this
 	}
 
 	void pushTags() {

@@ -1,0 +1,116 @@
+import com.nu.art.pipeline.exceptions.BadImplementationException
+@Library('dev-tools@dev')
+
+import com.nu.art.pipeline.modules.firebase.FirebaseDatabaseModule
+import com.nu.art.pipeline.workflow.BasePipeline
+import com.nu.art.pipeline.workflow.Workflow
+import com.nu.art.pipeline.workflow.variables.Var_Creds
+import com.nu.art.pipeline.workflow.variables.Var_Env
+
+class PipelineTest_FirebaseIntegration
+  extends BasePipeline<PipelineTest_FirebaseIntegration> {
+
+  private FirebaseDatabaseModule firebaseDatabaseModule
+  public Var_Creds Env_FirebaseServiceAccount = new Var_Creds("file", "TEMP-test-firebase", new Var_Env("GOOGLE_APPLICATION_CREDENTIALS"))
+
+  PipelineTest_FirebaseIntegration() {
+    super("Firebase integration", FirebaseDatabaseModule.class)
+  }
+
+  @Override
+  protected void init() {
+    this.setRequiredCredentials(Env_FirebaseServiceAccount)
+    firebaseDatabaseModule = getModule(FirebaseDatabaseModule.class)
+    firebaseDatabaseModule.setDefaultProjectId("quai-dev-ops")
+    firebaseDatabaseModule.setDefaultDatabaseUrl("quai-dev-ops-default-rtdb")
+  }
+
+
+  @Override
+  void pipeline() {
+    firebaseDatabaseModule.install()
+    this.testObject()
+    this.testString()
+    this.testNumber()
+  }
+
+  void testString() {
+    String testString = UUID.randomUUID().toString()
+    String pathToStringTest = "/testing/test-string"
+
+    addStage("Write String", {
+      firebaseDatabaseModule.setString(pathToStringTest, testString)
+    })
+
+    addStage("Read String", {
+      String response = firebaseDatabaseModule.getString(pathToStringTest, "default-test1-results")
+      if (response != testString)
+        throw new BadImplementationException("expected '${testString}' but got '${response}'")
+    })
+  }
+
+  void testNumber() {
+    int testInt = new Random().nextInt()
+    String pathToStringTest = "/testing/test-number"
+
+    addStage("Write Number", {
+      firebaseDatabaseModule.setNumber(pathToStringTest, testInt)
+    })
+
+    addStage("Read Number", {
+      Number response = firebaseDatabaseModule.getNumber(pathToStringTest, null)
+      if (response != testInt)
+        throw new BadImplementationException("expected '${testInt}' but got '${response}'")
+    })
+  }
+
+  void testObject() {
+    int testInt = new Random().nextInt()
+    String testString = UUID.randomUUID().toString()
+
+    String pathToStringTest = "/testing/test-object"
+    def toSave = [number: testInt, label: testString]
+
+    addStage("Write Object", {
+      firebaseDatabaseModule.setObj(pathToStringTest, toSave)
+    })
+
+    addStage("Read Object", {
+      def response = firebaseDatabaseModule.getObj(pathToStringTest, [number: testInt + 1, label: testString])
+      if (response != toSave)
+        throw new BadImplementationException("expected '${testInt}' but got '${response}'")
+    })
+  }
+}
+
+podTemplate(yaml: '''
+    apiVersion: v1
+    kind: Pod
+    metadata:
+      annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "false"
+    spec:
+      containers:
+        - name: test-container
+          image: us-central1-docker.pkg.dev/quai-md-jenkins-new-test-v1/runtime/prod-deploy:15-10-24-10h-42m
+          tty: true
+          resources:
+            limits:
+              cpu: "1"
+              memory: "2Gi"
+            requests:
+              cpu: "1"
+              memory: "2Gi"
+          command:
+            - sleep
+          args:
+            - "9999999"
+    
+      restartPolicy: Never
+  ''', activeDeadlineSeconds: 7200, instanceCap: 10) {
+  node(POD_LABEL) {
+    container('test-container') {
+      Workflow.createWorkflow(PipelineTest_FirebaseIntegration.class, this)
+    }
+  }
+}

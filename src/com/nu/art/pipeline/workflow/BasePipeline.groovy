@@ -7,77 +7,96 @@ import com.nu.art.pipeline.workflow.variables.Var_Creds
 import com.nu.art.pipeline.workflow.variables.Var_Env
 
 abstract class BasePipeline<T extends BasePipeline>
-	extends WorkflowModulesPack {
+  extends WorkflowModulesPack {
 
-	public Var_Env Var_CleanWorkspace = new Var_Env("CLEAN_WORKSPACE")
+  public Var_Env Var_CleanWorkspace = new Var_Env("CLEAN_WORKSPACE")
 
-	private static Class<? extends WorkflowModule>[] defaultModules = [BuildModule.class]
-	protected final Workflow workflow = Workflow.workflow
+  private static Class<? extends WorkflowModule>[] defaultModules = [BuildModule.class]
+  protected final Workflow workflow = Workflow.workflow
 
-	protected final String name
-	protected Var_Creds[] creds = []
-	protected String[] sshCreds = []
+  protected final String name
+  protected Var_Creds[] creds = []
+  protected String[] sshCreds = []
 
-	BasePipeline(String name, Class<? extends WorkflowModule>... modules) {
-		super(defaultModules + modules)
-		this.name = name
-	}
+  BasePipeline(String name, Class<? extends WorkflowModule>... modules) {
+    super(defaultModules + modules)
+    this.name = name
+  }
 
-	T printEnvParams(Var_Env... envVars) {
-		envVars.each { workflow.logDebug("${it.varName} == ${it.get()}") }
-		return (T) this
-	}
+  T printEnvParams(Var_Env... envVars) {
+    envVars.each { workflow.logDebug("${it.varName} == ${it.get()}") }
+    return (T) this
+  }
 
-	T setRequiredCredentials(Var_Creds... creds) {
-		this.creds = creds
-		return (T) this
-	}
+  T setRequiredCredentials(Var_Creds... creds) {
+    this.creds = creds
+    return (T) this
+  }
 
-	T setRequiredSSHCredentials(String... sshCreds) {
-		this.sshCreds = sshCreds
-		return (T) this
-	}
 
-	T addStage(String name, Closure toRun) {
-		workflow.addStage(name, toRun)
-		return (T) this
-	}
+  T setRequiredSSHCredentials(String... sshCreds) {
+    this.sshCreds = sshCreds
+    return (T) this
+  }
 
-	void cd(String folder, Closure todo) {
-		workflow.cd(folder, todo)
-	}
+  T setJobParams(Var_Env... jobParams) {
+    this.workflow.setJobParams(jobParams)
+    return (T) this
+  }
 
-	void withCredentials(Var_Creds[] params, Closure toRun) {
-		workflow.withCredentials(params, toRun)
-	}
+  T addStage(String name, Closure toRun) {
+    workflow.addStage(name, toRun)
+    return (T) this
+  }
 
-	JobTrigger triggerJob(String name) {
-		return getModule(BuildModule.class).triggerJob(name)
-	}
+  T runStage(String name, Closure toRun) {
+    workflow.runStage(name, toRun)
+    return (T) this
+  }
 
-	String _sh(String command, readOutput = false) {
-		return workflow.sh(command, readOutput)
-	}
+  void cd(String folder, Closure todo) {
+    workflow.cd(folder, todo)
+  }
 
-	String getName() {
-		return name
-	}
+  void withCredentials(Var_Creds[] params, Closure toRun) {
+    workflow.withCredentials(params, toRun)
+  }
 
-	void run() {
-		printEnvParams(Var_CleanWorkspace)
-		setDisplayName()
-		workflow.run()
-	}
+  JobTrigger triggerJob(String name) {
+    return getModule(BuildModule.class).triggerJob(name)
+  }
 
-	abstract void pipeline()
+  String _sh(String command, readOutput = false) {
+    return workflow.sh(command, readOutput)
+  }
 
-	void _postInit() {}
+  String bash(String command, readOutput = false) {
+    return workflow.bash(command, readOutput)
+  }
 
-	void setDisplayName() {
-		getModule(BuildModule.class).setDisplayName("#${VarConsts.Var_BuildNumber.get()}: ${name}")
-	}
+  String getName() {
+    return name
+  }
 
-	void cleanup() {
-		if ("true" == Var_CleanWorkspace.get()) workflow.deleteWorkspace()
-	}
+  void runInParallel(String stageName, Stage... stages) {
+    workflow.runInParallel(stageName, stages)
+  }
+
+  void run() {
+    printEnvParams(Var_CleanWorkspace)
+    setDisplayName()
+    workflow.run()
+  }
+
+  abstract void pipeline()
+
+  void _postInit() {}
+
+  void setDisplayName() {
+    getModule(BuildModule.class).setDisplayName("#${VarConsts.Var_BuildNumber.get()}: ${name}")
+  }
+
+  void cleanup() {
+    if ("true" == Var_CleanWorkspace.get()) workflow.deleteWorkspace()
+  }
 }
