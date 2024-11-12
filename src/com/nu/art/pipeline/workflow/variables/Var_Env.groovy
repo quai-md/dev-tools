@@ -40,15 +40,11 @@ class Var_Env
     this.param = param
   }
 
-  String get() {
-    return this.get(null)
+  String getBoolean(String fallbackValue = null) {
+    return this.get(fallbackValue).toBoolean()
   }
 
-  String getBoolean() {
-    return this.get(null).toBoolean()
-  }
-
-  String get(String fallbackValue) {
+  String get(String fallbackValue = null) {
     def value = this.value.get()
     if (this.fallbackParam && (value == null || value == ""))
       return this.fallbackParam.get()
