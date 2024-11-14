@@ -153,10 +153,10 @@ class Workflow
           if (t)
             throw t
 
+          this.currentStage = stage
           if (stage.skip)
             return;
 
-          this.currentStage = stage
           stage.toRun()
         })
       } catch (e) {
