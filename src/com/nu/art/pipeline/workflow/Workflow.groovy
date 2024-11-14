@@ -57,7 +57,6 @@ class Workflow
       pipeline._postInit()
       workflow.start()
 
-
       script.withCredentials(pipeline.creds.collect { param -> param.toCredential(script) }) {
         workflow.script.wrap([$class: 'BuildUser']) {
           pipeline.pipeline()
@@ -71,15 +70,12 @@ class Workflow
 
   public static final String Stage_IDLE = "IDLE"
   public static final String Stage_Started = "Started"
-  public static final String Stage_Cleanup = "Cleanup"
   public static final String Stage_Completed = "Completed"
-  public static final String Stage_Finally = "Finally"
 
   static Workflow workflow
   BasePipeline pipeline
   String currentStage = Stage_IDLE
-  private String[] orderedStaged = []
-  private LinkedHashMap<String, Closure> stages = [:]
+  private Stage[] stages = []
   CpsScript script
 
   private Workflow(def script) {
@@ -109,7 +105,7 @@ class Workflow
   }
 
   @NonCPS
-  protected void onApplicationStarting() {
+  void onApplicationStarting() {
     String art = "\n    ____  _            ___          \n" +
       "   / __ \\(_)___  ___  / (_)___  ___ \n" +
       "  / /_/ / / __ \\/ _ \\/ / / __ \\/ _ \\\n" +
@@ -122,8 +118,7 @@ class Workflow
   }
 
   void addStage(String name, Closure toRun) {
-    orderedStaged = ArrayTools.appendElement(orderedStaged, name)
-    stages.put(name, { toRun() })
+    stages = ArrayTools.appendElement(stages, new Stage(name, toRun))
   }
 
   void runStage(String name, Closure toRun) {
@@ -141,7 +136,7 @@ class Workflow
   }
 
   void terminate(String reason) {
-    orderedStaged = []
+    stages = []
     currentBuild.getRawBuild().delete()
     currentBuild.getRawBuild().getExecutor().interrupt(Result.NOT_BUILT)
     this.logWarning("Intentionally terminating this job: ${reason}")
@@ -151,17 +146,17 @@ class Workflow
   void run() {
     Throwable t = null
 
-    for (String stage : orderedStaged) {
+    for (Stage stage : stages) {
       logDebug("STAGE: ${stage}")
       try {
-        script.stage(stage, {
+        script.stage(stage.name, {
           if (t) {
 //						script.currentBuild.result = "FAILURE"
             throw t
           }
 
           this.currentStage = stage
-          stages[stage]()
+          stage.toRun()
         })
       } catch (e) {
         t = e
@@ -174,22 +169,10 @@ class Workflow
         else
           script.currentBuild.rawBuild.result = Result.FAILURE
 
-        logError("Error in stage '${stage}': ${t.getMessage()}", e)
+        logError("Error in stage '${stage.name}': ${t.getMessage()}", e)
 //				script.currentBuild.result = "FAILURE"
       }
     }
-
-    script.stage(Stage_Cleanup, {
-      try {
-        pipeline.cleanup()
-      } catch (e) {
-//				script.currentBuild.result = "FAILURE"
-
-        logError("Error in 'cleanup' stage: ${t.getMessage()}", e)
-        t = e
-        throw t
-      }
-    })
 
     script.stage(Stage_Completed, {
       try {
@@ -202,7 +185,7 @@ class Workflow
             this.dispatchEvent("Pipeline Error Event", OnPipelineListener.class, { listener -> listener.onPipelineFailed(t) } as WorkflowProcessor<OnPipelineListener>)
         }
       } catch (e) {
-        logError("Error in 'completion' stage: ${t.getMessage()}", e)
+        logError("Error in '${Stage_Completed}' stage: ${t.getMessage()}", e)
         t = e
       }
 
