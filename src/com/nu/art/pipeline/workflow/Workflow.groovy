@@ -150,10 +150,11 @@ class Workflow
       logDebug("STAGE: ${stage}")
       try {
         script.stage(stage.name, {
-          if (t) {
-//						script.currentBuild.result = "FAILURE"
+          if (t)
             throw t
-          }
+
+          if (stage.skip)
+            return;
 
           this.currentStage = stage
           stage.toRun()
