@@ -10,7 +10,7 @@ class Stage {
     this.toRun = toRun
   }
 
-  forceSkip() {
+  void forceSkip() {
     this.skip = true
   }
 }
