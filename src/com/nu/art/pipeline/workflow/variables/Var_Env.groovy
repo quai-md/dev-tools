@@ -40,7 +40,7 @@ class Var_Env
     this.param = param
   }
 
-  String getBoolean(String fallbackValue = null) {
+  Boolean getBoolean(String fallbackValue = null) {
     return this.get(fallbackValue).toBoolean()
   }
 

@@ -154,8 +154,10 @@ class Workflow
             throw t
 
           this.currentStage = stage
-          if (stage.skip)
+          if (stage.skip) {
+            this.logWarning("Skipping stage: ${stage.name}")
             return;
+          }
 
           stage.toRun()
         })
