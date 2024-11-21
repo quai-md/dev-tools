@@ -22,7 +22,7 @@ class JobTrigger
   }
 
   JobTrigger addString(Var_Env envVar, String fallbackValue = null) {
-    return this.addParam(JobParam.Param_String, envVar.varName, envVar.get() ?: fallbackValue)
+    return this.addParam(JobParam.Param_String, envVar.varName, envVar.get(fallbackValue))
   }
 
   JobTrigger addBoolean(String key, boolean value = false) {

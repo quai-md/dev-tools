@@ -94,7 +94,7 @@ class FirebaseDatabaseModule
 
 
 // Get a value from RTDB as a String
-  String getString(String path, String defaultValue, String projectId = this.defaultProjectId, String databaseUrl = null) {
+  String getString(String path, String defaultValue = null, String projectId = this.defaultProjectId, String databaseUrl = null) {
 
     String value = this.getValue(path, projectId, databaseUrl)
     if (value == null)
