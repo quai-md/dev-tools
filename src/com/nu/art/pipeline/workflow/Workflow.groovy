@@ -130,13 +130,11 @@ class Workflow
     script.stage(name, toRun)
   }
 
-  void runInParallel(String stageName, Stage... stages) {
-    addStage(stageName, {
-      workflow.script.parallel(stages.collectEntries { stage ->
-        [(stage.name): {
-          runStage(stage.name, stage.toRun)
-        }]
-      })
+  void runInParallel(Stage... stages) {
+    workflow.script.parallel(stages.collectEntries { stage ->
+      [(stage.name): {
+        runStage(stage.name, stage.toRun)
+      }]
     })
   }
 
