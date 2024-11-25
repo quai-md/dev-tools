@@ -254,8 +254,6 @@ class Workflow
   }
 
   void setJobParams(Var_Env... jobParams) {
-    printEnvVars("Job Parameters", jobParams)
-
     script.properties([
       script.parameters(jobParams.collect { var ->
         switch (var.param.type) {
