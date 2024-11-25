@@ -22,9 +22,8 @@ abstract class WorkflowModule
   }
 
   void setDryRun(boolean dryRun) {
+    this.dryRun = dryRun
   }
-
-  this.dryRun = dryRun
 
   def <R> R cd(String path, Closure<R> closure) {
     return workflow.cd(path, closure)
