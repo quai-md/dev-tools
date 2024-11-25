@@ -6,32 +6,39 @@ import com.cloudbees.groovy.cps.NonCPS
 import com.nu.art.modular.core.Module
 
 abstract class WorkflowModule
-	extends Module {
+  extends Module {
 
-	@NonCPS
-	@Override
-	protected void init() {}
+  protected dryRun = false
 
-	void _init() {}
+  @NonCPS
+  @Override
+  protected void init() {}
 
-	@SuppressWarnings('GrMethodMayBeStatic')
-	Workflow getWorkflow() {
-		Workflow.workflow
-	}
+  void _init() {}
 
-	def <R> R cd(String path, Closure<R> closure) {
-		return workflow.cd(path, closure)
-	}
+  @SuppressWarnings('GrMethodMayBeStatic')
+  Workflow getWorkflow() {
+    Workflow.workflow
+  }
 
-	String sh(String command, readOutput = false) {
-		return workflow.sh(command, readOutput)
-	}
+  void setDryRun(boolean dryRun) {
+  }
 
-	String bash(String command, readOutput = false) {
-		return workflow.bash(command, readOutput)
-	}
+  this.dryRun = dryRun
 
-	String sh(GString command, readOutput = false) {
-		return workflow.sh(command.toString(), readOutput)
-	}
+  def <R> R cd(String path, Closure<R> closure) {
+    return workflow.cd(path, closure)
+  }
+
+  String sh(String command, readOutput = false) {
+    return workflow.sh(command, readOutput)
+  }
+
+  String bash(String command, readOutput = false) {
+    return workflow.bash(command, readOutput)
+  }
+
+  String sh(GString command, readOutput = false) {
+    return workflow.sh(command.toString(), readOutput)
+  }
 }
