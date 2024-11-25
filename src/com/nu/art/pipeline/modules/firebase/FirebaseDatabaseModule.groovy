@@ -1,5 +1,6 @@
 package com.nu.art.pipeline.modules.firebase
 
+import com.nu.art.pipeline.workflow.Utils
 import com.nu.art.pipeline.workflow.WorkflowModule
 import groovy.json.JsonOutput
 import groovy.json.JsonSlurper
@@ -44,10 +45,12 @@ class FirebaseDatabaseModule
 
       def command = "firebase database:set ${path} --data '${value}' --project ${projectId} --force ${instance}"
       this.logDebug("'${command}'")
-      bash("""
+      if (!Utils.isDryRun()) {
+        bash("""
            ${installViaNVM ? prefix : ""}
            ${command}
         """)
+      }
     } catch (Throwable t) {
       this.logWarning("Failed to write value to RTDB: ", t)
       throw t

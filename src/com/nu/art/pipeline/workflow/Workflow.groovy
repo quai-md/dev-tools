@@ -54,10 +54,9 @@ class Workflow
     script.ansiColor('xterm') {
 
       WorkflowModule[] allmodules = workflow.manager.getModulesAssignableFrom(WorkflowModule.class)
-      Var_Env Env_DryRun = new Var_Env("DRY_RUN")
 
       allmodules.each {
-        it.setDryRun(Env_DryRun.getBoolean("false"))
+        it.setDryRun(Utils.isDryRun())
         it._init()
       }
 
