@@ -45,12 +45,15 @@ class FirebaseDatabaseModule
 
       def command = "firebase database:set ${path} --data '${value}' --project ${projectId} --force ${instance}"
       this.logDebug("'${command}'")
-      if (!Utils.isDryRun()) {
-        bash("""
+      if (Utils.isDryRun()) {
+        this.logWarning("Will not update firebase -- Dry Run")
+        return
+      }
+
+      bash("""
            ${installViaNVM ? prefix : ""}
            ${command}
         """)
-      }
     } catch (Throwable t) {
       this.logWarning("Failed to write value to RTDB: ", t)
       throw t
