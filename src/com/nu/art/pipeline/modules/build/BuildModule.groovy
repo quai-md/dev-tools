@@ -4,6 +4,7 @@ import com.cloudbees.groovy.cps.NonCPS
 import com.nu.art.pipeline.workflow.Workflow
 import com.nu.art.pipeline.workflow.WorkflowModule
 import com.nu.art.pipeline.workflow.variables.VarConsts
+import com.nu.art.pipeline.workflow.variables.Var_Creds
 import hudson.model.Cause
 import hudson.model.Run
 import hudson.tasks.test.AbstractTestResultAction
@@ -143,5 +144,12 @@ public class BuildModule
   void readFromFile(String pathToFile) {
     def content = workflow.script.readFile file: pathToFile
     return content
+  }
+
+  void setSecretAsSSH_Key(String secretId) {
+    Var_Creds[] sshKeyCreds = [new Var_Creds("sshUserPrivateKey", secretId, "PATH_TO_SSH_KEY")]
+    workflow.withCredentials(sshKeyCreds, {
+      sh """cp $PATH_TO_SSH_KEY ~/.ssh/id_rsa && chmod 600 ~/.ssh/id_rsa"""
+    })
   }
 }
