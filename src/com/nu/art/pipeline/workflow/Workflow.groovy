@@ -88,16 +88,23 @@ class Workflow
 
   void start() {
     addStage(Stage_Started, {
-      logDebug("Default run env var values:")
-      logDebug("JenkinsHome: " + VarConsts.Var_JenkinsHome.get())
-      logDebug("JobName: " + VarConsts.Var_JobName.get())
-      logDebug("BuildNumber: " + VarConsts.Var_BuildNumber.get())
-      logDebug("UserEmail: " + VarConsts.Var_User.get())
-      logDebug("BuildUrl: " + VarConsts.Var_BuildUrl.get())
-      logDebug("Workspace: " + VarConsts.Var_Workspace.get())
+      Var_Env[] envs = [
+        VarConsts.Var_JenkinsHome,
+        VarConsts.Var_JobName,
+        VarConsts.Var_BuildNumber,
+        VarConsts.Var_User,
+        VarConsts.Var_BuildUrl,
+        VarConsts.Var_Workspace,
+      ]
+      printEnvVars("Default run env var values:", envs)
 
       this.dispatchEvent("Pipeline Started Event", OnPipelineListener.class, { listener -> listener.onPipelineStarted() } as WorkflowProcessor<OnPipelineListener>)
     })
+  }
+
+  void printEnvVars(String label, Var_Env[] vars) {
+    logDebug(label)
+    vars.each { logDebug("${it.varName}: ${it.get()}") }
   }
 
   private void setManager(ModuleManager manager) {
@@ -247,6 +254,8 @@ class Workflow
   }
 
   void setJobParams(Var_Env... jobParams) {
+    printEnvVars("Job Parameters", jobParams)
+
     script.properties([
       script.parameters(jobParams.collect { var ->
         switch (var.param.type) {
