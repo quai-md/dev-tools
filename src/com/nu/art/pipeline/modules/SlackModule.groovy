@@ -118,7 +118,7 @@ class SlackModule
   }
 
   void onPipelineAborted() {
-    notify("*Aborted* in stage: ${workflow.currentStage}", Colors.DarkGray)
+    notify("*Aborted* in stage: ${workflow.currentStage.name}", Colors.DarkGray)
   }
 
   @Override

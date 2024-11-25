@@ -74,7 +74,7 @@ class Workflow
 
   static Workflow workflow
   BasePipeline pipeline
-  String currentStage = Stage_IDLE
+  Stage currentStage = new Stage(Stage_IDLE, {})
   private Stage[] stages = []
   CpsScript script
 
@@ -145,7 +145,7 @@ class Workflow
     Throwable t = null
 
     for (Stage stage : stages) {
-      logDebug("STAGE: ${stage}")
+      logDebug("STAGE: ${stage.name}")
       try {
         script.stage(stage.name, {
           if (t)
