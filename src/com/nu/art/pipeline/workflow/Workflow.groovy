@@ -97,15 +97,16 @@ class Workflow
         VarConsts.Var_BuildUrl,
         VarConsts.Var_Workspace,
       ]
+
       printEnvVars("Default run env var values:", envs)
-      printEnvVars("Job Parameters", this.jobParams)
+      printEnvVars("Job Parameters:", this.jobParams)
 
       this.dispatchEvent("Pipeline Started Event", OnPipelineListener.class, { listener -> listener.onPipelineStarted() } as WorkflowProcessor<OnPipelineListener>)
     })
   }
 
   void printEnvVars(String label, Var_Env[] vars) {
-    logDebug(label)
+    logInfo(label)
     vars.each { logDebug("${it.varName}: ${it.get()}") }
   }
 
