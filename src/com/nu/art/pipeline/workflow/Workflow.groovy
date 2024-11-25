@@ -77,6 +77,7 @@ class Workflow
   Stage currentStage = new Stage(Stage_IDLE, {})
   private Stage[] stages = []
   CpsScript script
+  private Var_Env[] jobParams
 
   private Workflow(def script) {
     this.script = script
@@ -97,6 +98,7 @@ class Workflow
         VarConsts.Var_Workspace,
       ]
       printEnvVars("Default run env var values:", envs)
+      printEnvVars("Job Parameters", this.jobParams)
 
       this.dispatchEvent("Pipeline Started Event", OnPipelineListener.class, { listener -> listener.onPipelineStarted() } as WorkflowProcessor<OnPipelineListener>)
     })
@@ -254,6 +256,7 @@ class Workflow
   }
 
   void setJobParams(Var_Env... jobParams) {
+    this.jobParams = jobParams
     script.properties([
       script.parameters(jobParams.collect { var ->
         switch (var.param.type) {
