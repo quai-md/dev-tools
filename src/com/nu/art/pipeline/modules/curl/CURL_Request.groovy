@@ -20,7 +20,7 @@ class CURL_Request {
   }
 
   CURL_Request setHeader(String key, String value) {
-    this.headers.putAll(headers)
+    this.headers.put(key, value)
     return this
   }
 
