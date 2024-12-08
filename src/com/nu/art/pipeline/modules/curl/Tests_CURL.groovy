@@ -5,6 +5,8 @@ import com.nu.art.pipeline.tests.TestCase
 import com.nu.art.pipeline.tests.TestSuite
 import com.nu.art.pipeline.workflow.WorkflowModule
 
+@Grab('com.nu-art-software:belog:1.2.34')
+
 class Consts {
   public static String Test1_Expected = """
 								curl -X POST \
