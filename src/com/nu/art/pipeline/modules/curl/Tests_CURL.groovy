@@ -19,7 +19,7 @@ class Tests_CURL
         .setHeader("Content-Type", "application/json")
         .setHeader("x-application", "my-application")
         .setBody([label: "this is the body"])
-        .compose("/tmp/output")
+        .compose("/tmp/output", "/tmp/input")
     })
     TestCase[] cases = [
       testCase1,
@@ -29,5 +29,5 @@ class Tests_CURL
 }
 
 class Consts {
-  public static String Test1_Expected = """curl -X GET -H "Content-Type: application/json" -H "x-application: my-application" -d '{ "label": "this is the body" }' -o /tmp/output -s -w '%{http_code}' https://my-domain.com/v1/artifacts/check-version-exists"""
+  public static String Test1_Expected = """curl -X GET -H "Content-Type: application/json" -H "x-application: my-application" -d @/tmp/input -o /tmp/output -s -w '%{http_code}' https://my-domain.com/v1/artifacts/check-version-exists"""
 }

@@ -33,8 +33,8 @@ class CURL_Request {
     return ModuleManager.ModuleManager.getModule(Module_CURL.class).execute(this, outputFile)
   }
 
-  String compose(String outputFile) {
-    return ModuleManager.ModuleManager.getModule(Module_CURL.class).composeCommand(this, outputFile)
+  String compose(String outputFile, String bodyFile) {
+    return ModuleManager.ModuleManager.getModule(Module_CURL.class).composeCommand(this, outputFile, bodyFile)
   }
 }
 
