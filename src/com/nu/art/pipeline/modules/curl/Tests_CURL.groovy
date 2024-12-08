@@ -7,18 +7,10 @@ import com.nu.art.pipeline.workflow.WorkflowModule
 
 @Grab('com.nu-art-software:belog:1.2.34')
 
-class Consts {
-  public static String Test1_Expected = """
-								curl -X POST \
-									-H "Content-Type: application/json" \
-									-H "x-application: my-application" \
-									-d '{ "label": "this is the body" }' \
-									https://my-domain.com/v1/artifacts/check-version-exists
-                """
-}
 
 class Tests_CURL
   extends Logger {
+
   public static Class<? extends WorkflowModule>[] modules = [Module_CURL.class]
 
   TestSuite collectTests() {
@@ -34,4 +26,14 @@ class Tests_CURL
     ]
     return new TestSuite("CURL Infra", cases)
   }
+}
+
+class Consts {
+  public static String Test1_Expected = """
+								curl -X POST \
+									-H "Content-Type: application/json" \
+									-H "x-application: my-application" \
+									-d '{ "label": "this is the body" }' \
+									https://my-domain.com/v1/artifacts/check-version-exists
+                """
 }
