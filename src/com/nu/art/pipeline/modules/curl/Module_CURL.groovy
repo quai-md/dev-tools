@@ -22,7 +22,7 @@ class Module_CURL
     return new CURL_Response(responseFile, responseHeaders, responseCode)
   }
 
-  String composeCommand(CURL_Request request, String responseFile) {
+  String composeCommand(CURL_Request request, String pathToResponseFile, String pathToBodyFile = "/tmp/curl_body_${System.currentTimeMillis()}.tmp") {
     if (!request.url)
       throw new BadImplementationException("URL is required for the request.")
 
@@ -30,17 +30,16 @@ class Module_CURL
     String headerOptions = request.headers.collect { key, value -> "-H '${key}: ${value}'" }.join(" ")
 
     // Prepare body
-    String bodyFile
     String bodyOption = ""
     Object body = request.body
     if (body) {
-      bodyFile = "/tmp/curl_body_${System.currentTimeMillis()}.tmp"
-      workflow.writeToFile(bodyFile, body instanceof String ? body : new JsonBuilder(body).toString())
-      bodyOption = " --data @${bodyFile}"
+      pathToBodyFile = "/tmp/curl_body_${System.currentTimeMillis()}.tmp"
+      workflow.writeToFile(pathToBodyFile, body instanceof String ? body : new JsonBuilder(body).toString())
+      bodyOption = " --data @${pathToBodyFile}"
     }
 
     // Construct curl command
-    String command = "curl -X ${request.method} ${headerOptions}${bodyOption} -o ${responseFile} -s -w '%{http_code}' ${request.url}"
+    String command = "curl -X ${request.method} ${headerOptions}${bodyOption} -o ${pathToResponseFile} -s -w '%{http_code}' ${request.url}"
     command
   }
 }
