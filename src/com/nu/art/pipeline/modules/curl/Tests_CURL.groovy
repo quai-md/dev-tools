@@ -21,8 +21,16 @@ class Tests_CURL
         .setBody([label: "this is the body"])
         .compose("/tmp/output", "/tmp/input")
     })
+    TestCase testCase2 = new TestCase("Simple", Consts.Test2_Expected, {
+      return new CURL_Request("https://my-domain.com/v1/artifacts/check-version-exists")
+        .setHeader("Content-Type", "application/json")
+        .setHeader("x-application", "my-application")
+        .compose("/tmp/output", "/tmp/input")
+    })
+
     TestCase[] cases = [
       testCase1,
+      testCase2
     ]
     return new TestSuite("CURL Infra", cases)
   }
@@ -30,7 +38,5 @@ class Tests_CURL
 
 class Consts {
   public static String Test1_Expected = """curl -X GET -H "Content-Type: application/json" -H "x-application: my-application" --data @/tmp/input -o /tmp/output -s -w '%{http_code}' https://my-domain.com/v1/artifacts/check-version-exists"""
+  public static String Test2_Expected = """curl -X GET -H "Content-Type: application/json" -H "x-application: my-application" -o /tmp/output -s -w '%{http_code}' https://my-domain.com/v1/artifacts/check-version-exists"""
 }
-
-// curl -X GET -H "Content-Type: application/json" -H "x-application: my-application" -d @/tmp/input -o /tmp/output -s -w '%{http_code}' https://my-domain.com/v1/artifacts/check-version-exists
-// curl -X GET -H 'Content-Type: application/json' -H 'x-application: my-application' --data @/tmp/input -o /tmp/output -s -w '%{http_code}' https://my-domain.com/v1/artifacts/check-version-exists'
