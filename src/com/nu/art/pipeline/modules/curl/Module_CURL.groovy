@@ -27,7 +27,7 @@ class Module_CURL
       throw new BadImplementationException("URL is required for the request.")
 
     // Prepare headers
-    String headerOptions = request.headers.collect { key, value -> "-H '${key}: ${value}'" }.join(" ")
+    String headerOptions = request.headers.collect { key, value -> "-H \"${key}: ${value}\"" }.join(" ")
 
     // Prepare body
     String bodyOption = ""

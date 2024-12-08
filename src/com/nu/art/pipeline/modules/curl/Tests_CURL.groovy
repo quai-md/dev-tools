@@ -29,5 +29,8 @@ class Tests_CURL
 }
 
 class Consts {
-  public static String Test1_Expected = """curl -X GET -H "Content-Type: application/json" -H "x-application: my-application" -d @/tmp/input -o /tmp/output -s -w '%{http_code}' https://my-domain.com/v1/artifacts/check-version-exists"""
+  public static String Test1_Expected = """curl -X GET -H "Content-Type: application/json" -H "x-application: my-application" --data @/tmp/input -o /tmp/output -s -w '%{http_code}' https://my-domain.com/v1/artifacts/check-version-exists"""
 }
+
+// curl -X GET -H "Content-Type: application/json" -H "x-application: my-application" -d @/tmp/input -o /tmp/output -s -w '%{http_code}' https://my-domain.com/v1/artifacts/check-version-exists
+// curl -X GET -H 'Content-Type: application/json' -H 'x-application: my-application' --data @/tmp/input -o /tmp/output -s -w '%{http_code}' https://my-domain.com/v1/artifacts/check-version-exists'
