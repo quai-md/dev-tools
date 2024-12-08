@@ -33,7 +33,6 @@ class Module_CURL
     String bodyOption = ""
     Object body = request.body
     if (body) {
-      pathToBodyFile = "/tmp/curl_body_${System.currentTimeMillis()}.tmp"
       workflow.writeToFile(pathToBodyFile, body instanceof String ? body : new JsonBuilder(body).toString())
       bodyOption = " --data @${pathToBodyFile}"
     }
