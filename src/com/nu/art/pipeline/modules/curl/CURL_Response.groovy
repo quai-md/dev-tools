@@ -16,7 +16,7 @@ class CURL_Response {
     this.responseCode = responseCode
   }
 
-  <T> T json(Closure<T> converter) {
+  def <T> T json(Closure<T> converter) {
     String response = text()
     return converter(new JsonSlurper().parseText(response))
   }
