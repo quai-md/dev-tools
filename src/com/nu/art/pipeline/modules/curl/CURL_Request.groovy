@@ -2,6 +2,7 @@ package com.nu.art.pipeline.modules.curl
 
 import com.nu.art.modular.core.ModuleManager
 
+@Grab('com.nu-art-software:module-manager:1.2.34')
 
 class CURL_Request {
 
