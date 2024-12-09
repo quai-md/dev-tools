@@ -2,6 +2,8 @@ package com.nu.art.pipeline.modules.curl
 
 import com.nu.art.modular.core.ModuleManager
 
+@Grab('com.nu-art-software:module-manager:1.2.34')
+
 class CURL_Request {
 
   final String method
@@ -29,11 +31,11 @@ class CURL_Request {
     return this
   }
 
-  CURL_Response execute(String outputFile) {
+  CURL_Response execute(String outputFile = null) {
     return ModuleManager.ModuleManager.getModule(Module_CURL.class).execute(this, outputFile)
   }
 
-  String compose(String outputFile, String bodyFile) {
+  String compose(String outputFile = null, String bodyFile = null) {
     return ModuleManager.ModuleManager.getModule(Module_CURL.class).composeCommand(this, outputFile, bodyFile)
   }
 }
