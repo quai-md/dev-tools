@@ -2,13 +2,14 @@ package com.nu.art.pipeline.modules.curl
 
 import com.nu.art.pipeline.exceptions.BadImplementationException
 import com.nu.art.pipeline.workflow.WorkflowModule
+import com.nu.art.pipeline.workflow.variables.VarConsts
 import groovy.json.JsonBuilder
 
 class Module_CURL
   extends WorkflowModule {
 
 
-  CURL_Response execute(CURL_Request request, String responseFile = "/tmp/curl_response_${System.currentTimeMillis()}.tmp") {
+  CURL_Response execute(CURL_Request request, String responseFile = "${VarConsts.Var_Workspace.get()}/tmp/curl_response_${System.currentTimeMillis()}.tmp") {
     String command = composeCommand(request, responseFile)
     this.logDebug("Executing: ${command}")
 
@@ -22,7 +23,7 @@ class Module_CURL
     return new CURL_Response(responseFile, responseHeaders, responseCode)
   }
 
-  String composeCommand(CURL_Request request, String pathToResponseFile, String pathToBodyFile = "/tmp/curl_body_${System.currentTimeMillis()}.tmp") {
+  String composeCommand(CURL_Request request, String pathToResponseFile, String pathToBodyFile = "${VarConsts.Var_Workspace.get()}/tmp/curl_body_${System.currentTimeMillis()}.tmp") {
     if (!request.url)
       throw new BadImplementationException("URL is required for the request.")
 
