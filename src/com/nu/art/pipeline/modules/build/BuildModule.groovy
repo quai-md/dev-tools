@@ -5,6 +5,7 @@ import com.nu.art.pipeline.workflow.Workflow
 import com.nu.art.pipeline.workflow.WorkflowModule
 import com.nu.art.pipeline.workflow.variables.VarConsts
 import com.nu.art.pipeline.workflow.variables.Var_Creds
+import com.nu.art.pipeline.workflow.variables.Var_CredsFile
 import com.nu.art.pipeline.workflow.variables.Var_Env
 import hudson.model.Cause
 import hudson.model.Run
@@ -149,7 +150,7 @@ public class BuildModule
 
   void setSecretAsSSH_Key(String secretId) {
     def SSH_KEY = new Var_Env("GIT_SSH_KEY")
-    Var_Creds[] sshKeyCreds = [new Var_Creds("sshUserPrivateKey", secretId, SSH_KEY)]
+    Var_Creds[] sshKeyCreds = [new Var_CredsFile("sshUserPrivateKey", secretId, SSH_KEY)]
     workflow.withCredentials(sshKeyCreds, {
       sh("cp ${SSH_KEY.get()} ~/.ssh/id_rsa && chmod 600 ~/.ssh/id_rsa")
     })
