@@ -9,7 +9,10 @@ class Module_CURL
   extends WorkflowModule {
 
 
-  CURL_Response execute(CURL_Request request, String responseFile = "${VarConsts.Var_Workspace.get()}/tmp/curl_response_${System.currentTimeMillis()}.tmp") {
+  CURL_Response execute(CURL_Request request, String responseFile = null) {
+    if (responseFile == null)
+      responseFile = "${VarConsts.Var_Workspace.get()}/tmp/curl_response_${System.currentTimeMillis()}.tmp"
+
     String command = composeCommand(request, responseFile)
     this.logDebug("Executing: ${command}")
 
