@@ -22,7 +22,7 @@ class CURL_Response {
   }
 
   String text() {
-    if (responseCode != "200")
+    if (responseCode != 200)
       throw new BadImplementationException("Error, did not assert for response code.. got ${responseCode}")
 
     return ModuleManager.ModuleManager.getModule(BuildModule.class).readFromFile(this.pathToResponseFile)
