@@ -324,6 +324,7 @@ class Workflow
   }
 
   void writeToFile(String pathToFile, String content) {
+    this.logDebug("Writing to file: ${pathToFile}")
     script.writeFile file: pathToFile, text: content
   }
 
