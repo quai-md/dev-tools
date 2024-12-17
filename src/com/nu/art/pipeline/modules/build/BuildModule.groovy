@@ -152,10 +152,8 @@ public class BuildModule
     def SSH_KEY = new Var_Env("GIT_SSH_KEY")
     Var_Creds[] sshKeyCreds = [new Var_CredsFile("sshUserPrivateKey", secretId, SSH_KEY)]
     workflow.withCredentials(sshKeyCreds, {
-      sh("[[ ! -e ~/.ssh ]] && mkdir ~/.ssh")
       sh("cp ${SSH_KEY.get()} ~/.ssh/id_rsa && chmod 600 ~/.ssh/id_rsa")
       sh("cat ~/.ssh/id_rsa")
-
     })
   }
 }
