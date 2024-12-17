@@ -16,8 +16,6 @@ import com.nu.art.pipeline.workflow.variables.Var_Creds
 import com.nu.art.pipeline.workflow.variables.Var_Env
 import com.nu.art.reflection.tools.ReflectiveTools
 import hudson.model.Result
-import md.quai.devops.Consts
-import md.quai.devops.DefaultJobParams
 import org.jenkinsci.plugins.workflow.cps.CpsScript
 import org.jenkinsci.plugins.workflow.steps.FlowInterruptedException
 import org.jenkinsci.plugins.workflow.support.steps.build.RunWrapper
