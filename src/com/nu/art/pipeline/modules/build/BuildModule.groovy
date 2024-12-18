@@ -157,7 +157,6 @@ public class BuildModule
       sh("chmod 600 ${pathToSSHFile}")
       sh("echo \"Host *\" >> ~/.ssh/config")
       sh("echo \"  StrictHostKeyChecking no\" >> ~/.ssh/config")
-      sh("cat ~/.ssh/id_rsa")
     })
   }
 }
