@@ -65,12 +65,15 @@ class Var_Env
     this.fallbackParam = fallbackParam
   }
 
-  String assertExist() {
+  boolean exists() {
     def varValue = value.get()
+    return varValue != null && !varValue.isEmpty()
+  }
 
-    if (varValue == null || varValue.isEmpty())
+  String assertExist() {
+    if (!this.exists())
       throw new MUSTNeverHappenException("${varName} is required but not provided.")
 
-    return varValue
+    return value.get()
   }
 }
