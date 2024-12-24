@@ -123,7 +123,7 @@ class SlackModule
 
   @Override
   void onPipelineFailed(Throwable e) {
-    notify("*Error* in stage: ${workflow.currentStage}", Colors.Red)
+    notify("*Error* in stage: ${workflow.currentStage.name}", Colors.Red)
   }
 
   @Override
