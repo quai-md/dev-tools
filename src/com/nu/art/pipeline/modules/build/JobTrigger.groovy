@@ -12,8 +12,8 @@ class JobTrigger
   def params = []
   boolean wait = true
 
-  JobTrigger(Workflow workflow, String name) {
-    this.name = name
+  JobTrigger(Workflow workflow, String JobName) {
+    this.name = JobName
     this.workflow = workflow
   }
 
