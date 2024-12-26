@@ -26,7 +26,7 @@ class StringTemplateReplacer {
 					varValue = defaultValue
 				} else {
 					// Variable not found and no default specified, throw exception
-					throw new Exception("Environment variable '${varName}' not found and no default value specified.")
+					throw new Exception("While templating file: ${fromFile}\nEnvironment variable '${varName}' not found and no default value specified.")
 				}
 			}
 
