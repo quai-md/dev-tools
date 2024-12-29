@@ -11,6 +11,7 @@ class JobTrigger
   Workflow workflow
   def params = []
   boolean wait = true
+  private RunWrapper triggeredJob
 
   JobTrigger(Workflow workflow, String JobName) {
     this.name = JobName
@@ -45,7 +46,10 @@ class JobTrigger
   }
 
   RunWrapper run() {
-    RunWrapper result = workflow.script.build job: name, parameters: params, wait: wait
-    return result
+    return this.triggeredJob = workflow.script.build job: name, parameters: params, wait: wait
+  }
+
+  String getResultValue(String key) {
+    return this.triggeredJob.getBuildVariables()[key]
   }
 }
