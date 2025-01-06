@@ -115,7 +115,6 @@ class SlackModule
 	}
 
 	void sendMessage(SlackMessage message) {
-		this.logWarning("GOT HERE")
 		String color = message.color
 		String teamDomain = message.teamDomain ?: this.teamDomain
 		String channel = message.channel ?: this.defaultChannel
