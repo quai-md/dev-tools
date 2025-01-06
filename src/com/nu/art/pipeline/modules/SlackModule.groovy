@@ -20,6 +20,7 @@ class SlackModule
 	private String defaultChannel
 	private BuildModule buildModule
 	private boolean enabled = true
+	private List<OnPipelineListener> listeners = new ArrayList<>()
 
 	@Deprecated
 	SlackModule prepare() {
@@ -155,21 +156,29 @@ class SlackModule
 
 	@Override
 	void onPipelineStarted() {
+		this.listeners.forEach { it.onPipelineStarted() }
 		notify("*Started*", Colors.LightGray)
 	}
 
 	@Override
 	void onPipelineAborted() {
+		this.listeners.forEach { it.onPipelineAborted() }
 		notify("*Aborted* in stage: ${workflow.currentStage.name}", Colors.DarkGray)
 	}
 
 	@Override
 	void onPipelineFailed(Throwable e) {
+		this.listeners.forEach { it.onPipelineFailed(e) }
 		notify("*Error* in stage: ${workflow.currentStage.name}", Colors.Red)
 	}
 
 	@Override
 	void onPipelineSuccess() {
+		this.listeners.forEach { it.onPipelineSuccess() }
 		notify("*Success*${onSuccess ? "\n${onSuccess}" : ""}", Colors.Green)
+	}
+
+	void addListener(OnPipelineListener listener) {
+		this.listeners.add(listener)
 	}
 }
