@@ -156,6 +156,7 @@ class SlackModule
 
 	@Override
 	void onPipelineStarted() {
+		this.logWarning("HEREEEEEE")
 		this.listeners.forEach { it.onPipelineStarted() }
 		notify("*Started*", Colors.LightGray)
 	}
