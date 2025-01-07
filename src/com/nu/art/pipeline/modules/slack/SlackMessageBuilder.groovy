@@ -11,7 +11,6 @@ class SlackMessageBuilder {
 		this.slackModule = slackModule
 	}
 
-
 	SlackMessageBuilder setTeamDomain(String teamDomain) {
 		message.teamDomain = teamDomain
 		return this
@@ -37,7 +36,7 @@ class SlackMessageBuilder {
 		return this
 	}
 
-	SlackMessageBuilder appendTimeFrom(String label) {
+	SlackMessageBuilder appendTimeFrom(String label = "after") {
 		message.message += slackModule.getTimeFromStart(label)
 		return this
 	}

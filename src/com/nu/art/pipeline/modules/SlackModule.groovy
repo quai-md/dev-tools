@@ -120,7 +120,7 @@ class SlackModule
 		String channel = message.channel ?: this.defaultChannel
 		String messageBody = message.message ?: ""
 
-		messageBody
+		messageBody = messageBody
 			.replaceAll(/<b>/, "*")
 			.replaceAll(/<\/b>/, "*")
 			.replaceAll(/<br>/, "\n")
