@@ -119,13 +119,14 @@ class SlackModule
 		String teamDomain = message.teamDomain ?: this.teamDomain
 		String channel = message.channel ?: this.defaultChannel
 		String messageBody = message.message ?: ""
-
+		this.logWarning("ORIGINAL: ${messageBody}")
 		messageBody = messageBody
 			.replaceAll(/<b>/, "*")
 			.replaceAll(/<\/b>/, "*")
 			.replaceAll(/<br>/, "\n")
 			.replaceAll(/<\/br>/, "\n")
 
+		this.logWarning("TO BE SENT: ${messageBody}")
 		workflow.script.slackSend(botUser: true, color: color, teamDomain: teamDomain, channel: channel, message: messageBody, tokenCredentialId: SlackToken.id)
 	}
 
