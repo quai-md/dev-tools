@@ -156,7 +156,6 @@ class SlackModule
 
 	@Override
 	void onPipelineStarted() {
-		this.logWarning("HEREEEEEE")
 		for (OnPipelineListener listener : this.listeners) {
 			listener.onPipelineStarted()
 		}
