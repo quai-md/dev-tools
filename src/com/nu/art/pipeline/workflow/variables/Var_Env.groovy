@@ -6,74 +6,79 @@ import com.nu.art.pipeline.interfaces.Getter
 import com.nu.art.pipeline.workflow.Workflow
 
 class Var_Env
-  implements Getter<String> {
+	implements Getter<String> {
 
-  final String varName
-  final Getter<String> value
-  final JobParam param
-  private Var_Env fallbackParam
+	final String varName
+	final Getter<String> value
+	final JobParam param
+	private Var_Env fallbackParam
+	private String fallbackValue
 
-  static Var_Env create(String varName) {
-    return new Var_Env(varName)
-  }
+	static Var_Env create(String varName) {
+		return new Var_Env(varName)
+	}
 
-  static Var_Env create(String varName, Getter<String> value) {
-    return new Var_Env(varName, value)
-  }
+	static Var_Env create(String varName, Getter<String> value) {
+		return new Var_Env(varName, value)
+	}
 
+	Var_Env(String varName) {
+		this(varName, new JobParam("string"))
+	}
 
-  Var_Env(String varName) {
-    this(varName, new JobParam("string"))
-  }
+	Var_Env(String varName, JobParam param) {
+		this(varName, { Workflow.workflow.getEnvironmentVariable(varName) }, param)
+	}
 
-  Var_Env(String varName, JobParam param) {
-    this(varName, { Workflow.workflow.getEnvironmentVariable(varName) }, param)
-  }
+	Var_Env(String varName, Getter<String> value) {
+		this(varName, value, new JobParam("string"))
+	}
 
-  Var_Env(String varName, Getter<String> value) {
-    this(varName, value, new JobParam("string"))
-  }
+	Var_Env(String varName, Getter<String> value, JobParam param) {
+		this.varName = varName
+		this.value = value
+		this.param = param
+	}
 
-  Var_Env(String varName, Getter<String> value, JobParam param) {
-    this.varName = varName
-    this.value = value
-    this.param = param
-  }
+	Boolean getBoolean(String fallbackValue = null) {
+		return this.get(fallbackValue).toBoolean()
+	}
 
-  Boolean getBoolean(String fallbackValue = null) {
-    return this.get(fallbackValue).toBoolean()
-  }
+	String get(String fallbackValue = null) {
+		def value = this.value.get()
+		if (this.fallbackParam && (value == null || value == ""))
+			return this.fallbackParam.get()
 
-  String get(String fallbackValue = null) {
-    def value = this.value.get()
-    if (this.fallbackParam && (value == null || value == ""))
-      return this.fallbackParam.get()
+		return value ?: this.fallbackValue ?: fallbackValue
+	}
 
-    return value ?: fallbackValue
-  }
+	String set(String newValue) {
+		String oldValue = this.value.get()
+		Workflow.workflow.setEnvironmentVariable(this.varName, newValue)
+		return oldValue
+	}
 
-  String set(String newValue) {
-    String oldValue = this.value.get()
-    Workflow.workflow.setEnvironmentVariable(this.varName, newValue)
-    return oldValue
-  }
+	Var_Env setFallback(Var_Env fallbackParam) {
+		if (this == fallbackParam || fallbackParam.fallbackParam == this)
+			throw new BadImplementationException("setting same param instance as fallback")
 
-  Var_Env setFallback(Var_Env fallbackParam) {
-    if (this == fallbackParam || fallbackParam.fallbackParam == this)
-      throw new BadImplementationException("setting same param instance as fallback")
+		this.fallbackParam = fallbackParam
+	}
 
-    this.fallbackParam = fallbackParam
-  }
+	Var_Env setFallback(String fallbackValue) {
+		this.fallbackValue = fallbackValue
+		return this
+	}
 
-  boolean exists() {
-    def varValue = value.get()
-    return varValue != null && !varValue.isEmpty()
-  }
+	boolean exists() {
+		def varValue = value.get()
+		return varValue != null && !varValue.isEmpty()
+	}
 
-  String assertExist() {
-    if (!this.exists())
-      throw new MUSTNeverHappenException("${varName} is required but not provided.")
+	String assertExist() {
+		if (!this.exists())
+			throw new MUSTNeverHappenException("${varName} is required but not provided.")
 
-    return value.get()
-  }
+		return value.get()
+	}
 }
