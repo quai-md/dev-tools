@@ -33,6 +33,10 @@ abstract class BasePipeline<T extends BasePipeline>
     return (T) this
   }
 
+  T addRequiredCredentials(Var_Creds... creds) {
+    this.creds += creds
+    return (T) this
+  }
 
   T setRequiredSSHCredentials(String... sshCreds) {
     this.sshCreds = sshCreds
@@ -78,8 +82,8 @@ abstract class BasePipeline<T extends BasePipeline>
     return name
   }
 
-  void runInParallel(String stageName, Stage... stages) {
-    workflow.runInParallel(stageName, stages)
+  void runInParallel(Stage... stages) {
+    workflow.runInParallel(stages)
   }
 
   void run() {

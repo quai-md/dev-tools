@@ -1,5 +1,6 @@
 package com.nu.art.pipeline.modules.firebase
 
+import com.nu.art.pipeline.workflow.Utils
 import com.nu.art.pipeline.workflow.WorkflowModule
 import groovy.json.JsonOutput
 import groovy.json.JsonSlurper
@@ -44,6 +45,11 @@ class FirebaseDatabaseModule
 
       def command = "firebase database:set ${path} --data '${value}' --project ${projectId} --force ${instance}"
       this.logDebug("'${command}'")
+      if (Utils.isDryRun()) {
+        this.logWarning("Will not update firebase -- Dry Run")
+        return
+      }
+
       bash("""
            ${installViaNVM ? prefix : ""}
            ${command}
@@ -94,7 +100,7 @@ class FirebaseDatabaseModule
 
 
 // Get a value from RTDB as a String
-  String getString(String path, String defaultValue, String projectId = this.defaultProjectId, String databaseUrl = null) {
+  String getString(String path, String defaultValue = null, String projectId = this.defaultProjectId, String databaseUrl = null) {
 
     String value = this.getValue(path, projectId, databaseUrl)
     if (value == null)

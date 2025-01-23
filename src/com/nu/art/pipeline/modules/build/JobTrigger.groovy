@@ -11,9 +11,10 @@ class JobTrigger
   Workflow workflow
   def params = []
   boolean wait = true
+  private RunWrapper triggeredJob
 
-  JobTrigger(Workflow workflow, String name) {
-    this.name = name
+  JobTrigger(Workflow workflow, String JobName) {
+    this.name = JobName
     this.workflow = workflow
   }
 
@@ -22,7 +23,7 @@ class JobTrigger
   }
 
   JobTrigger addString(Var_Env envVar, String fallbackValue = null) {
-    return this.addParam(JobParam.Param_String, envVar.varName, envVar.get() ?: fallbackValue)
+    return this.addParam(JobParam.Param_String, envVar.varName, envVar.get(fallbackValue))
   }
 
   JobTrigger addBoolean(String key, boolean value = false) {
@@ -45,7 +46,10 @@ class JobTrigger
   }
 
   RunWrapper run() {
-    RunWrapper result = workflow.script.build job: name, parameters: params, wait: wait
-    return result
+    return this.triggeredJob = workflow.script.build job: name, parameters: params, wait: wait
+  }
+
+  String getResultValue(String key) {
+    return this.triggeredJob.getBuildVariables()[key]
   }
 }

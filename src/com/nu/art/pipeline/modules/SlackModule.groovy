@@ -1,6 +1,7 @@
 package com.nu.art.pipeline.modules
 
 import com.nu.art.pipeline.modules.build.BuildModule
+import com.nu.art.pipeline.modules.slack.SlackMessage
 import com.nu.art.pipeline.workflow.OnPipelineListener
 import com.nu.art.pipeline.workflow.Workflow
 import com.nu.art.pipeline.workflow.WorkflowModule
@@ -19,6 +20,7 @@ class SlackModule
 	private String defaultChannel
 	private BuildModule buildModule
 	private boolean enabled = true
+	private List<OnPipelineListener> listeners = new ArrayList<>()
 
 	@Deprecated
 	SlackModule prepare() {
@@ -69,7 +71,15 @@ class SlackModule
 		String email = VarConsts.Var_User.get()
 		String preMessage = ""
 		if (showTitle) {
-			preMessage += "<${VarConsts.Var_BuildUrl.get()}|*${buildModule.getDisplayName()}*>"
+			def name = buildModule.getDisplayName()
+			name = name
+				.replaceAll("&", "&amp;")
+				.replaceAll("<", "&lt;")
+				.replaceAll(">", "&gt;")
+				.replaceAll("\"", "&quot;")
+				.replaceAll("'", "&#39;")
+
+			preMessage += "<${VarConsts.Var_BuildUrl.get()}|*${name}*>"
 			preMessage += workflow.currentStage != Workflow.Stage_Started ? " after: ${buildModule.getDurationAsString()}" : ""
 			preMessage += email != null ? "\nTriggered By: *${email}*" : ""
 			preMessage += buildModule.getDescription() ? "\n${buildModule.getDescription()}" : ""
@@ -104,22 +114,82 @@ class SlackModule
 		}
 	}
 
+	void sendMessage(SlackMessage message) {
+		String color = message.color
+		String teamDomain = message.teamDomain ?: this.teamDomain
+		String channel = message.channel ?: this.defaultChannel
+		String messageBody = message.message ?: ""
+
+		messageBody = messageBody
+			.replaceAll(/<b>/, "*")
+			.replaceAll(/<\/b>/, "*")
+			.replaceAll(/<br>/, "\n")
+			.replaceAll(/<\/br>/, "\n")
+
+		this.logWarning("Sending message to slack: ${messageBody}")
+		workflow.script.slackSend(botUser: true, color: color, teamDomain: teamDomain, channel: channel, message: messageBody, tokenCredentialId: SlackToken.id)
+	}
+
+	String getLinkToJob(String label = null) {
+		if (!label)
+			label = buildModule.getDisplayName()
+
+		label = label
+			.replaceAll("&", "&amp;")
+			.replaceAll("<", "&lt;")
+			.replaceAll(">", "&gt;")
+			.replaceAll("\"", "&quot;")
+			.replaceAll("'", "&#39;")
+
+		return "<${VarConsts.Var_BuildUrl.get()}|*${label}*>"
+	}
+
+
+	String getTriggerCause() {
+		String email = VarConsts.Var_User.get()
+		return email != null ? "\nTriggered By: *${email}*" : ""
+	}
+
+	String getTimeFromStart(String label = "after") {
+		return "${label}: ${buildModule.getDurationAsString()}"
+	}
+
 	@Override
 	void onPipelineStarted() {
+		for (OnPipelineListener listener : this.listeners) {
+			listener.onPipelineStarted()
+		}
+
 		notify("*Started*", Colors.LightGray)
 	}
 
+	@Override
 	void onPipelineAborted() {
-		notify("*Aborted* in stage: ${workflow.currentStage}", Colors.DarkGray)
+		for (OnPipelineListener listener : this.listeners) {
+			listener.onPipelineAborted()
+		}
+
+		notify("*Aborted* in stage: ${workflow.currentStage.name}", Colors.DarkGray)
 	}
 
 	@Override
 	void onPipelineFailed(Throwable e) {
-		notify("*Error* in stage: ${workflow.currentStage}", Colors.Red)
+		for (OnPipelineListener listener : this.listeners) {
+			listener.onPipelineFailed(e)
+		}
+
+		notify("*Error* in stage: ${workflow.currentStage.name}", Colors.Red)
 	}
 
 	@Override
 	void onPipelineSuccess() {
+		for (OnPipelineListener listener : this.listeners) {
+			listener.onPipelineSuccess()
+		}
 		notify("*Success*${onSuccess ? "\n${onSuccess}" : ""}", Colors.Green)
+	}
+
+	void addListener(OnPipelineListener listener) {
+		this.listeners.add(listener)
 	}
 }

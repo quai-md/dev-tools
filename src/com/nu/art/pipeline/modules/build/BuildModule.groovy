@@ -4,6 +4,9 @@ import com.cloudbees.groovy.cps.NonCPS
 import com.nu.art.pipeline.workflow.Workflow
 import com.nu.art.pipeline.workflow.WorkflowModule
 import com.nu.art.pipeline.workflow.variables.VarConsts
+import com.nu.art.pipeline.workflow.variables.Var_Creds
+import com.nu.art.pipeline.workflow.variables.Var_CredsFile
+import com.nu.art.pipeline.workflow.variables.Var_Env
 import hudson.model.Cause
 import hudson.model.Run
 import hudson.tasks.test.AbstractTestResultAction
@@ -143,5 +146,17 @@ public class BuildModule
   void readFromFile(String pathToFile) {
     def content = workflow.script.readFile file: pathToFile
     return content
+  }
+
+  void setSecretAsSSH_Key(String secretId) {
+    def SSH_KEY = new Var_Env("GIT_SSH_KEY")
+    Var_Creds[] sshKeyCreds = [new Var_CredsFile("sshUserPrivateKey", secretId, SSH_KEY)]
+    workflow.withCredentials(sshKeyCreds, {
+      def pathToSSHFile = "~/.ssh/id_rsa"
+      sh("cp ${SSH_KEY.get()} ${pathToSSHFile}")
+      sh("chmod 600 ${pathToSSHFile}")
+      sh("echo \"Host *\" >> ~/.ssh/config")
+      sh("echo \"  StrictHostKeyChecking no\" >> ~/.ssh/config")
+    })
   }
 }

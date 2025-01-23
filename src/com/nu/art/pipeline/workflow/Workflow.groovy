@@ -52,11 +52,14 @@ class Workflow
     script.ansiColor('xterm') {
 
       WorkflowModule[] allmodules = workflow.manager.getModulesAssignableFrom(WorkflowModule.class)
-      allmodules.each { it._init() }
+
+      allmodules.each {
+        it.setDryRun(Utils.isDryRun())
+        it._init()
+      }
 
       pipeline._postInit()
       workflow.start()
-
 
       script.withCredentials(pipeline.creds.collect { param -> param.toCredential(script) }) {
         workflow.script.wrap([$class: 'BuildUser']) {
@@ -71,16 +74,14 @@ class Workflow
 
   public static final String Stage_IDLE = "IDLE"
   public static final String Stage_Started = "Started"
-  public static final String Stage_Cleanup = "Cleanup"
   public static final String Stage_Completed = "Completed"
-  public static final String Stage_Finally = "Finally"
 
   static Workflow workflow
   BasePipeline pipeline
-  String currentStage = Stage_IDLE
-  private String[] orderedStaged = []
-  private LinkedHashMap<String, Closure> stages = [:]
+  Stage currentStage = new Stage(Stage_IDLE, {})
+  private Stage[] stages = []
   CpsScript script
+  private Var_Env[] jobParams
 
   private Workflow(def script) {
     this.script = script
@@ -92,16 +93,25 @@ class Workflow
 
   void start() {
     addStage(Stage_Started, {
-      logDebug("Default run env var values:")
-      logDebug("JenkinsHome: " + VarConsts.Var_JenkinsHome.get())
-      logDebug("JobName: " + VarConsts.Var_JobName.get())
-      logDebug("BuildNumber: " + VarConsts.Var_BuildNumber.get())
-      logDebug("UserEmail: " + VarConsts.Var_User.get())
-      logDebug("BuildUrl: " + VarConsts.Var_BuildUrl.get())
-      logDebug("Workspace: " + VarConsts.Var_Workspace.get())
+      Var_Env[] envs = [
+        VarConsts.Var_JenkinsHome,
+        VarConsts.Var_JobName,
+        VarConsts.Var_BuildNumber,
+        VarConsts.Var_User,
+        VarConsts.Var_BuildUrl,
+        VarConsts.Var_Workspace,
+      ]
+
+      printEnvVars("Default run env var values:", envs)
+      printEnvVars("Job Parameters:", this.jobParams)
 
       this.dispatchEvent("Pipeline Started Event", OnPipelineListener.class, { listener -> listener.onPipelineStarted() } as WorkflowProcessor<OnPipelineListener>)
     })
+  }
+
+  void printEnvVars(String label, Var_Env[] vars) {
+    logInfo(label)
+    vars.each { logDebug("${it.varName}: ${it.get()}") }
   }
 
   private void setManager(ModuleManager manager) {
@@ -109,7 +119,7 @@ class Workflow
   }
 
   @NonCPS
-  protected void onApplicationStarting() {
+  void onApplicationStarting() {
     String art = "\n    ____  _            ___          \n" +
       "   / __ \\(_)___  ___  / (_)___  ___ \n" +
       "  / /_/ / / __ \\/ _ \\/ / / __ \\/ _ \\\n" +
@@ -122,26 +132,23 @@ class Workflow
   }
 
   void addStage(String name, Closure toRun) {
-    orderedStaged = ArrayTools.appendElement(orderedStaged, name)
-    stages.put(name, { toRun() })
+    stages = ArrayTools.appendElement(stages, new Stage(name, toRun))
   }
 
   void runStage(String name, Closure toRun) {
     script.stage(name, toRun)
   }
 
-  void runInParallel(String stageName, Stage... stages) {
-    addStage(stageName, {
-      workflow.script.parallel(stages.collectEntries { stage ->
-        [(stage.name): {
-          runStage(stage.name, stage.toRun)
-        }]
-      })
+  void runInParallel(Stage... stages) {
+    workflow.script.parallel(stages.collectEntries { stage ->
+      [(stage.name): {
+        runStage(stage.name, stage.toRun)
+      }]
     })
   }
 
   void terminate(String reason) {
-    orderedStaged = []
+    stages = []
     currentBuild.getRawBuild().delete()
     currentBuild.getRawBuild().getExecutor().interrupt(Result.NOT_BUILT)
     this.logWarning("Intentionally terminating this job: ${reason}")
@@ -151,17 +158,20 @@ class Workflow
   void run() {
     Throwable t = null
 
-    for (String stage : orderedStaged) {
-      logDebug("STAGE: ${stage}")
+    for (Stage stage : stages) {
+      logDebug("STAGE: ${stage.name}")
       try {
-        script.stage(stage, {
-          if (t) {
-//						script.currentBuild.result = "FAILURE"
+        script.stage(stage.name, {
+          if (t)
             throw t
-          }
 
           this.currentStage = stage
-          stages[stage]()
+          if (stage.skip) {
+            this.logWarning("Skipping stage: ${stage.name}")
+            return;
+          }
+
+          stage.toRun()
         })
       } catch (e) {
         t = e
@@ -174,22 +184,10 @@ class Workflow
         else
           script.currentBuild.rawBuild.result = Result.FAILURE
 
-        logError("Error in stage '${stage}': ${t.getMessage()}", e)
+        logError("Error in stage '${stage.name}': ${t.getMessage()}", e)
 //				script.currentBuild.result = "FAILURE"
       }
     }
-
-    script.stage(Stage_Cleanup, {
-      try {
-        pipeline.cleanup()
-      } catch (e) {
-//				script.currentBuild.result = "FAILURE"
-
-        logError("Error in 'cleanup' stage: ${t.getMessage()}", e)
-        t = e
-        throw t
-      }
-    })
 
     script.stage(Stage_Completed, {
       try {
@@ -202,7 +200,7 @@ class Workflow
             this.dispatchEvent("Pipeline Error Event", OnPipelineListener.class, { listener -> listener.onPipelineFailed(t) } as WorkflowProcessor<OnPipelineListener>)
         }
       } catch (e) {
-        logError("Error in 'completion' stage: ${t.getMessage()}", e)
+        logError("Error in '${Stage_Completed}' stage: ${t.getMessage()}", e)
         t = e
       }
 
@@ -263,6 +261,7 @@ class Workflow
   }
 
   void setJobParams(Var_Env... jobParams) {
+    this.jobParams = jobParams
     script.properties([
       script.parameters(jobParams.collect { var ->
         switch (var.param.type) {
@@ -323,6 +322,7 @@ class Workflow
   }
 
   void writeToFile(String pathToFile, String content) {
+    this.logDebug("Writing to file: ${pathToFile}")
     script.writeFile file: pathToFile, text: content
   }
 
