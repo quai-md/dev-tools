@@ -28,9 +28,10 @@ array_contains() {
   for i in "${@:2}"; do
     if [[ "${i}" == "${1}" ]]; then
       echo "true"
-      return
+      return 0
     fi
   done
+  return 1
 }
 
 ## @function: array_remove(arrayVarName, ...itemToRemoves)
