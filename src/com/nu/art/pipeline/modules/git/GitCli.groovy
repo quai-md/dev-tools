@@ -92,8 +92,8 @@ class GitCli
 
     GitCli createBranch(String branch) {
         append("""
-			git checkout - b ${branch}
-			git push-- set -upstream origin ${branch}
+			git checkout -b ${branch}
+            git push --set-upstream origin ${branch}
 			""")
         return this
     }
