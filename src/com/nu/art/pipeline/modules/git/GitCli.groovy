@@ -51,7 +51,7 @@ class GitCli
     }
 
     GitCli getCurrentBranch() {
-        append("git status | grep \"On branch\" | sed -E \"s")
+        append("git status | grep \"On branch\" | sed -E \"s/On branch //\"")
         return this
     }
 
