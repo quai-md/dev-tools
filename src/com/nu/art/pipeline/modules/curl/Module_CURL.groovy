@@ -48,6 +48,9 @@ class Module_CURL
 			workflow.writeToFile(pathToBodyFile, finalBody)
 			bodyOption = " --data @${pathToBodyFile}"
 			this.logInfo("finalBody: ${finalBody}")
+
+			def contentLength = finalBody.getBytes("UTF-8").length
+			headerOptions += " -H \"Content-Length: ${contentLength}\""
 		}
 
 		// Construct curl command
