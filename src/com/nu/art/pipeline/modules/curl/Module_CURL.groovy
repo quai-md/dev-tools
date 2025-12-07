@@ -41,8 +41,8 @@ class Module_CURL
 			bodyOption = " --data @${pathToBodyFile}"
 			this.logInfo("finalBody: ${finalBody}")
 
-			def contentLength = finalBody.getBytes("UTF-8").length
-			headerOptions += " -H \"Content-Length: ${contentLength}\""
+//			def contentLength = finalBody.getBytes("UTF-8").length
+//			headerOptions += " -H \"Content-Length: ${contentLength}\""
 		}
 
 		// Construct curl command
