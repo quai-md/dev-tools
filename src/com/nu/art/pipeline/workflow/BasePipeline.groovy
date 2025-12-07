@@ -29,6 +29,7 @@ abstract class BasePipeline<T extends BasePipeline>
 	}
 
 	T setRequiredCredentials(Var_Creds... creds) {
+		creds.each { this.logDebug("using credential: ${it.id} => ${it.envVar.varName}") }
 		this.creds = creds
 		return (T) this
 	}
