@@ -7,16 +7,8 @@ import groovy.json.JsonBuilder
 
 class Module_CURL
 	extends WorkflowModule {
-	boolean installed = false
 
 	CURL_Response execute(CURL_Request request, String responseFile = null) {
-		if (!installed) {
-			workflow.sh("curl -LO \"https://github.com/moparisthebest/static-curl/releases/download/v8.7.1/curl-amd64\"")
-			workflow.sh("chmod +x curl-amd64   # ONLY if needed")
-			workflow.sh("./curl-amd64 -V")
-			installed = true
-		}
-
 		if (responseFile == null)
 			responseFile = "${VarConsts.Var_Workspace.get()}/tmp/curl_response_${System.currentTimeMillis()}.tmp"
 
@@ -54,7 +46,7 @@ class Module_CURL
 		}
 
 		// Construct curl command
-		String command = "./curl-amd64 --http1.1 -v -X ${request.method} ${bodyOption} -o ${pathToResponseFile} ${headerOptions} -s -w '%{http_code}' ${request.url}"
+		String command = "curl -v -X ${request.method} ${bodyOption} -o ${pathToResponseFile} ${headerOptions} -s -w '%{http_code}' ${request.url}"
 		command
 	}
 }
