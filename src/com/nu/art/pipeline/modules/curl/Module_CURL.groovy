@@ -51,7 +51,7 @@ class Module_CURL
 		}
 
 		// Construct curl command
-		String command = "./curl-amd64 -v -X ${request.method} ${headerOptions}${bodyOption} -o ${pathToResponseFile} -s -w '%{http_code}' ${request.url}"
+		String command = "./curl-amd64 -v -X ${request.method} ${bodyOption} -o ${pathToResponseFile} ${headerOptions} -s -w '%{http_code}' ${request.url}"
 		command
 	}
 }
