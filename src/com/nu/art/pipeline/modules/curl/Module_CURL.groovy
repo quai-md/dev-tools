@@ -42,7 +42,7 @@ class Module_CURL
     }
 
     // Construct curl command
-    String command = "curl -X ${request.method} ${headerOptions}${bodyOption} -o ${pathToResponseFile} -s -w '%{http_code}' ${request.url}"
+    String command = "curl --http1.1 -v -X ${request.method} ${headerOptions}${bodyOption} -o ${pathToResponseFile} -s -w '%{http_code}' ${request.url}"
     command
   }
 }
