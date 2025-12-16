@@ -1,12 +1,10 @@
 package com.nu.art.pipeline.modules.build
 
 import com.nu.art.pipeline.workflow.Workflow
-import com.nu.art.pipeline.workflow.logs.Logger
 import com.nu.art.pipeline.workflow.variables.Var_Env
 import org.jenkinsci.plugins.workflow.support.steps.build.RunWrapper
 
 class JobTrigger
-  extends Logger
   implements Serializable {
 
   String name
@@ -16,7 +14,6 @@ class JobTrigger
   private RunWrapper triggeredJob
 
   JobTrigger(Workflow workflow, String JobName) {
-    super()
     this.name = JobName
     this.workflow = workflow
   }
@@ -49,15 +46,6 @@ class JobTrigger
   }
 
   RunWrapper run() {
-    logInfo("=".repeat(80))
-    logInfo("Triggering Job: ${name}")
-    logInfo("Wait for completion: ${wait}")
-    logInfo("Parameters (${params.size()}):")
-    params.each { param ->
-      logInfo("  - ${param.name} (${param['$class']}): ${param.value}")
-    }
-    logInfo("=".repeat(80))
-
     return this.triggeredJob = workflow.script.build job: name, parameters: params, wait: wait
   }
 
