@@ -71,7 +71,7 @@ class Var_Env
 	}
 
 	boolean exists() {
-		def varValue = value.get()
+		def varValue = this.get()
 		return varValue != null && !varValue.isEmpty()
 	}
 
