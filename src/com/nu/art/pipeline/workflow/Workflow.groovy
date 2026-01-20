@@ -252,7 +252,7 @@ class Workflow
 	@NonCPS
 	String getEnvironmentVariable(String varName) {
 		def value = script.env[varName]
-		if (value.class == String.class)
+		if (value && value.class == String.class)
 			value = value.toString().trim()
 
 		if (value == "")
