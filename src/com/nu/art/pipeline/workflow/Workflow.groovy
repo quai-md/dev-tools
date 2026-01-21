@@ -255,7 +255,7 @@ class Workflow
 		if (value && value.class == String.class)
 			value = value.toString().trim()
 
-		if (value == "")
+		if (value == "" )
 			return null
 
 		return value
