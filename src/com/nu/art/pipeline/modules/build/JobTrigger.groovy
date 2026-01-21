@@ -17,7 +17,7 @@ class JobTrigger
 
 	JobTrigger(Workflow workflow, String jobName) {
 		super()
-		super.setTag(jobName)
+		this.setTag(jobName)
 		this.name = jobName
 		this.workflow = workflow
 	}
