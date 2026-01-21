@@ -153,7 +153,7 @@ public class BuildModule
 		workflow.withCredentials(sshKeyCreds, {
 			this.logDebug(SSH_KEY.get().substring(1))
 			def pathToSSHFile = "~/.ssh/id_rsa"
-			sh("cp ${SSH_KEY.get()} ${pathToSSHFile}")
+			sh("cp \"${SSH_KEY.get()}\" ${pathToSSHFile}")
 			sh("chmod 600 ${pathToSSHFile}")
 			sh("echo \"Host *\" >> ~/.ssh/config")
 			sh("echo \"  StrictHostKeyChecking no\" >> ~/.ssh/config")
