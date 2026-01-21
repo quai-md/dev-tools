@@ -16,7 +16,7 @@ class JobTrigger
 	private RunWrapper triggeredJob
 
 	JobTrigger(Workflow workflow, String jobName) {
-		setTag(jobName)
+		super.setTag(jobName)
 		this.name = jobName
 		this.workflow = workflow
 	}
