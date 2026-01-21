@@ -152,7 +152,7 @@ public class BuildModule
 		Var_Creds[] sshKeyCreds = [new Var_CredsFile("sshUserPrivateKey", secretId, SSH_KEY)]
 		workflow.withCredentials(sshKeyCreds, {
 			def pathToSSHFile = "~/.ssh/id_rsa"
-			sh("[ ! -d /home/jenkins/.ssh ] && mkdir /home/jenkins/.ssh")
+			sh("mkdir -p /home/jenkins/.ssh || true")
 			sh("chmod 700 /home/jenkins/.ssh")
 			sh("cp ${SSH_KEY.get()} ${pathToSSHFile}")
 			sh("chmod 600 ${pathToSSHFile}")
