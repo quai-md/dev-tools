@@ -40,10 +40,10 @@ class GitCli
         return this
     }
 
-    GitCli fetch() {
-        append("git fetch")
-        return this
-    }
+	GitCli fetch(String remote = "", String branch = "") {
+		append("git fetch ${remote} ${branch}".trim())
+		return this
+	}
 
     GitCli resetHard(String tag = "") {
         append("git reset --hard ${tag}")
@@ -70,10 +70,10 @@ class GitCli
         return this
     }
 
-    GitCli merge(String mergeFrom) {
-        append("git merge ${mergeFrom}")
-        return this
-    }
+	GitCli merge(String mergeFrom, String flags = "") {
+		append("git merge ${flags} ${mergeFrom}".trim())
+		return this
+	}
 
     GitCli pushTags() {
         append("git push --tags --force")

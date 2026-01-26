@@ -79,8 +79,14 @@ class GitRepo {
 		}
 	}
 
-	void merge(String commitTag) {
-		sh(cli().merge(commitTag))
+	GitRepo fetch(String remote = "origin", String branch = "") {
+		sh(cli().fetch(remote, branch))
+		return this
+	}
+
+	GitRepo merge(String commitTag, String flags = "") {
+		sh(cli().merge(commitTag, flags))
+		return this
 	}
 
 	GitRepo createTag(String tagName) {
