@@ -130,6 +130,20 @@ public class BuildModule
 		return workflow.script.findFiles(glob: filter)
 	}
 
+	/**
+	 * Attach files matching {@code pattern} to the current Jenkins build (Build → Artifacts).
+	 * Wraps the {@code archiveArtifacts} pipeline step — consumer pipelines must use this
+	 * instead of {@code workflow.script.archiveArtifacts}.
+	 */
+	void archiveArtifacts(String pattern, boolean onlyIfSuccessful = false, boolean allowEmptyArchive = true) {
+		logInfo("Archiving build artifacts: ${pattern}")
+		workflow.script.archiveArtifacts(
+			artifacts: pattern,
+			onlyIfSuccessful: onlyIfSuccessful,
+			allowEmptyArchive: allowEmptyArchive,
+		)
+	}
+
 	RunWrapper getLastSuccessfulBuild() {
 		workflow.getCurrentBuild().getPreviousSuccessfulBuild()
 	}

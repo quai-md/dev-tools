@@ -1,0 +1,61 @@
+---
+description: Jenkins Pipeline DSL and API must go through typed WorkflowModules — never raw workflow.script from consumer pipelines
+globs:
+  - "**/*.groovy"
+  - "**/_docs/**/*.md"
+alwaysApply: false
+---
+
+# Jenkins API isolation
+
+Jenkins Pipeline DSL steps and Jenkins core APIs (`Run`, `RunWrapper`, `Cause`, plugin steps, etc.) are **untyped, CPS-sensitive, and version-coupled**. Calling them directly from consumer pipeline code (dev-ops, encounter-manager `.jenkins/`, etc.) spreads that garbage everywhere.
+
+## Rule
+
+**Any interaction with the Jenkins API or Pipeline DSL must be wrapped in a `WorkflowModule` subclass in dev-tools.** Consumer pipelines call the module — they never reach through to `workflow.script`, raw `hudson.*` types, or plugin step names.
+
+```groovy
+// ❌ BAD — Jenkins DSL leaked into consumer pipeline
+workflow.script.archiveArtifacts artifacts: 'reports/*.csv', allowEmptyArchive: true
+workflow.script.slackSend channel: '#ops', message: 'done'
+
+// ✅ GOOD — typed module surface
+buildModule.archiveArtifacts('reports/*.csv')
+slackModule.notify('done', Colors.Green, '#ops')
+```
+
+## Module ownership
+
+| Concern | Module | Examples |
+|---|---|---|
+| Build metadata, artifacts, job trigger | `BuildModule` | `setDisplayName`, `findFiles`, `copyArtifacts`, `archiveArtifacts`, `triggerJob` |
+| Slack | `SlackModule` | `notify`, `sendFile` |
+| Git / checkout | `GitModule` | `create(...).build()`, repo checkout |
+| GCS | `GCP_Bucket` | bucket copy helpers |
+| Docker | `DockerModule` | image build/push |
+| HTTP | `Module_CURL` | REST calls |
+
+When a pipeline needs a Jenkins step that no module exposes yet: **add a typed method to the owning module in dev-tools first**, then call it from the pipeline. Do not inline the step in dev-ops.
+
+## Where wrappers live
+
+- Modules: `src/com/nu/art/pipeline/modules/`
+- Build/artifact helpers: `src/com/nu/art/pipeline/modules/build/`
+- Framework entry: `src/com/nu/art/pipeline/workflow/` (`Workflow`, `BasePipeline`, `WorkflowModule`)
+
+`Workflow` may expose some steps for **internal** module use. Consumer pipelines should still prefer `BuildModule` / other modules over `workflow.archiveArtifacts(...)`.
+
+## Adding a new wrapper
+
+1. Pick the module that owns the concern (default for generic build steps: `BuildModule`).
+2. Add a method with explicit parameters — hide Jenkins map syntax and defaults inside the module.
+3. Log at info level when the action is non-obvious (artifact patterns, job names).
+4. Document the method in `src/com/nu/art/pipeline/README.md` or dev-ops `_docs/pipeline-authoring.md`.
+5. Call only the new method from consumer pipelines.
+
+## Review checklist
+
+- [ ] No new `workflow.script.<step>` in dev-ops or app `.jenkins/` pipelines
+- [ ] No new direct `hudson.model.*` / plugin imports in consumer pipelines
+- [ ] New Jenkins behaviour has a dev-tools module method
+- [ ] Pipeline uses `getModule(...)` / inherited `buildModule`, `slackModule`, etc.
